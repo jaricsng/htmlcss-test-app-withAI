@@ -5,6 +5,7 @@ import CodeEditor from '../../components/CodeEditor';
 import LivePreview from '../../components/LivePreview';
 import { testsApi, questionsApi, TestWithQuestions, Question, Criterion } from '../../lib/api';
 
+/** Dropdown options for the question type selector. */
 const QUESTION_TYPES = [
   { value: 'code-from-scratch', label: 'Code from Scratch' },
   { value: 'fix-the-bug', label: 'Fix the Bug' },
@@ -12,6 +13,17 @@ const QUESTION_TYPES = [
   { value: 'mcq', label: 'Multiple Choice' },
 ] as const;
 
+/**
+ * Full-screen test editor for lecturers.
+ *
+ * Layout: a fixed sidebar (test metadata + question list) and a main panel
+ * that switches between three tabs — Question (fields), Criteria (grading rules),
+ * and Preview (live render of starter/reference code).
+ *
+ * All field edits are saved on blur via individual API calls (`saveTestMeta`,
+ * `saveQuestion`). Questions and criteria are managed optimistically — the UI
+ * updates immediately and the API call runs in the background.
+ */
 export default function TestBuilder() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -145,16 +157,18 @@ export default function TestBuilder() {
           {/* Test meta */}
           <div className="card p-4 space-y-3">
             <div>
-              <label className="label">Test Title</label>
+              <label className="label" htmlFor="test-title">Test Title</label>
               <input
+                id="test-title"
                 className="input"
                 defaultValue={test.title}
                 onBlur={e => saveTestMeta('title', e.target.value)}
               />
             </div>
             <div>
-              <label className="label">Description</label>
+              <label className="label" htmlFor="test-description">Description</label>
               <textarea
+                id="test-description"
                 className="input resize-none"
                 rows={2}
                 defaultValue={test.description ?? ''}
@@ -162,8 +176,9 @@ export default function TestBuilder() {
               />
             </div>
             <div>
-              <label className="label">Time Limit (minutes)</label>
+              <label className="label" htmlFor="test-time-limit">Time Limit (minutes)</label>
               <input
+                id="test-time-limit"
                 className="input"
                 type="number"
                 defaultValue={test.time_limit_minutes ?? ''}
@@ -266,6 +281,15 @@ export default function TestBuilder() {
   );
 }
 
+/**
+ * Form for editing a single question's metadata and content.
+ *
+ * Provides type-specific fields: code editors (starter/reference HTML+CSS) for
+ * code questions, or a radio-option list for MCQ questions. Each field saves on
+ * blur via `onSave`. The local `field()` helper wires Monaco editor props
+ * (value, onChange, onBlur) to the local state copy, so edits are reflected
+ * in the preview tab without requiring a round-trip.
+ */
 function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: Partial<Question>) => void }) {
   const [local, setLocal] = useState(question);
   useEffect(() => setLocal(question), [question.id]);
@@ -285,12 +309,13 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
     <div className="flex-1 overflow-y-auto space-y-4 pr-1">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="label">Title</label>
-          <input className="input" defaultValue={question.title} onBlur={e => onSave({ title: e.target.value })} />
+          <label className="label" htmlFor="q-title">Title</label>
+          <input id="q-title" className="input" defaultValue={question.title} onBlur={e => onSave({ title: e.target.value })} />
         </div>
         <div>
-          <label className="label">Type</label>
+          <label className="label" htmlFor="q-type">Type</label>
           <select
+            id="q-type"
             className="input"
             value={local.type}
             onChange={e => {
@@ -305,8 +330,9 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
       </div>
 
       <div>
-        <label className="label">Description / Instructions</label>
+        <label className="label" htmlFor="q-description">Description / Instructions</label>
         <textarea
+          id="q-description"
           className="input resize-none"
           rows={3}
           defaultValue={question.description}
@@ -315,8 +341,8 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
       </div>
 
       <div>
-        <label className="label">Total Points</label>
-        <input className="input w-32" type="number" defaultValue={question.total_points}
+        <label className="label" htmlFor="q-points">Total Points</label>
+        <input id="q-points" className="input w-32" type="number" defaultValue={question.total_points}
           onBlur={e => onSave({ total_points: Number(e.target.value) })} />
       </div>
 
@@ -367,6 +393,16 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
   );
 }
 
+/**
+ * Lists existing grading criteria for a question and provides a form to add new ones.
+ *
+ * Supports two criterion types:
+ * - **DOM Check** — verifies element existence, or an attribute/text value.
+ * - **CSS Style Check** — verifies a CSS property value on a selector.
+ *
+ * The form resets label, selector, and value fields after each successful add,
+ * keeping type and points unchanged for rapid entry of similar criteria.
+ */
 function CriteriaEditor({
   question, onAdd, onDelete,
 }: {

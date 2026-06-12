@@ -5,6 +5,22 @@ import CodeEditor from '../../components/CodeEditor';
 import LivePreview from '../../components/LivePreview';
 import { testsApi, attemptsApi, TestWithQuestions, Question, Submission, Attempt } from '../../lib/api';
 
+/**
+ * The in-test experience for students.
+ *
+ * On mount, fetches the test and starts (or resumes) the attempt in parallel.
+ * Existing submission data is loaded into a `submissions` map keyed by `question_id`
+ * so the student can switch questions without losing edits.
+ *
+ * Auto-save: `updateSubmission` queues a debounced API call (800ms) via `autoSave`
+ * after every change so progress is persisted even if the student closes the tab.
+ *
+ * Countdown timer: if `time_limit_minutes` is set, a `setTimeout` chain decrements
+ * `timeLeft` each second and calls `handleSubmit` automatically at zero.
+ *
+ * The left sidebar shows question navigation with a green indicator dot for any
+ * question that has been answered.
+ */
 export default function TestRoom() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -186,6 +202,11 @@ export default function TestRoom() {
   );
 }
 
+/**
+ * Renders MCQ options as large clickable radio-button cards.
+ * Empty options (blank strings) are filtered out so lecturers can leave
+ * unused option slots blank without affecting the student view.
+ */
 function McqEditor({
   question, selected, onChange,
 }: {
@@ -221,6 +242,12 @@ function McqEditor({
   );
 }
 
+/**
+ * Side-by-side layout of HTML + CSS editors and a live preview panel.
+ * When `showReference` is true (match-output questions), a second preview
+ * showing the target output is rendered below the student's output so they
+ * can compare visually.
+ */
 function CodeWorkspace({
   html, css, onHtmlChange, onCssChange, showReference, refHtml, refCss,
 }: {

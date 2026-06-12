@@ -1,23 +1,17 @@
-import express from 'express';
-import cors from 'cors';
-import './db/schema.js';
-import authRouter from './routes/auth.js';
-import testsRouter from './routes/tests.js';
-import questionsRouter from './routes/questions.js';
-import attemptsRouter from './routes/attempts.js';
+import { createApp } from './app.js';
+import defaultDb from './db/schema.js';
 
-const app = express();
+/**
+ * Server entry point.
+ *
+ * Wires the singleton database (path resolved from `DB_PATH` env var,
+ * defaulting to `data/app.db` relative to the project root) into
+ * {@link createApp} and starts listening.
+ *
+ * Port is read from the `PORT` environment variable (default `3001`).
+ */
 const PORT = process.env.PORT ?? 3001;
-
-app.use(cors({ origin: 'http://localhost:5173' }));
-app.use(express.json({ limit: '10mb' }));
-
-app.use('/api/auth', authRouter);
-app.use('/api/tests', testsRouter);
-app.use('/api/questions', questionsRouter);
-app.use('/api/attempts', attemptsRouter);
-
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
+const app = createApp(defaultDb);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

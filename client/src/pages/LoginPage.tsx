@@ -3,6 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authApi } from '../lib/api';
 import { setSession } from '../lib/auth';
 
+/**
+ * Public login form.
+ * On successful authentication, persists the session via {@link setSession}
+ * and redirects to `/lecturer` or `/student` based on the returned role.
+ * Displays the server's error message inline on failure.
+ */
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -39,12 +45,12 @@ export default function LoginPage() {
             </div>
           )}
           <div>
-            <label className="label">Email</label>
-            <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <label className="label" htmlFor="login-email">Email</label>
+            <input id="login-email" className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
           </div>
           <div>
-            <label className="label">Password</label>
-            <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+            <label className="label" htmlFor="login-password">Password</label>
+            <input id="login-password" className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
           </div>
           <button className="btn-primary w-full justify-center py-2.5" disabled={loading}>
             {loading ? 'Signing in…' : 'Sign In'}

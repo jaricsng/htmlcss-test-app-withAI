@@ -2,11 +2,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getUser, clearSession } from '../lib/auth';
 
 interface Props {
+  /** Page body content rendered below the header. */
   children: React.ReactNode;
+  /** Optional page title shown in the header bar (hidden on small screens). */
   title?: string;
+  /** Optional action buttons/links rendered in the header bar, to the right of the title. */
   actions?: React.ReactNode;
 }
 
+/**
+ * Application shell shared by all authenticated pages.
+ *
+ * Renders a sticky header with the app logo, a role badge (Lecturer / Student),
+ * the user's display name, and a Logout button. The logo links to the role-appropriate
+ * dashboard (`/lecturer` or `/student`). Logging out calls {@link clearSession} and
+ * redirects to `/login`.
+ */
 export default function Layout({ children, title, actions }: Props) {
   const user = getUser();
   const navigate = useNavigate();

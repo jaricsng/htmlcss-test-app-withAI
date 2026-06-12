@@ -3,6 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authApi } from '../lib/api';
 import { setSession } from '../lib/auth';
 
+/**
+ * Public registration form.
+ * Collects name, email, password, and role (Student / Lecturer) via a toggled
+ * button pair. On success, persists the session and redirects to the appropriate dashboard.
+ */
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', name: '', password: '', role: 'student' as 'lecturer' | 'student' });
@@ -38,16 +43,16 @@ export default function RegisterPage() {
             </div>
           )}
           <div>
-            <label className="label">Full Name</label>
-            <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+            <label className="label" htmlFor="reg-name">Full Name</label>
+            <input id="reg-name" className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
           </div>
           <div>
-            <label className="label">Email</label>
-            <input className="input" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
+            <label className="label" htmlFor="reg-email">Email</label>
+            <input id="reg-email" className="input" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
           </div>
           <div>
-            <label className="label">Password</label>
-            <input className="input" type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required minLength={6} />
+            <label className="label" htmlFor="reg-password">Password</label>
+            <input id="reg-password" className="input" type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required minLength={6} />
           </div>
           <div>
             <label className="label">I am a…</label>

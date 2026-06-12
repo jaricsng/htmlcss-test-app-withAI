@@ -4,6 +4,19 @@ import Layout from '../../components/Layout';
 import LivePreview from '../../components/LivePreview';
 import { attemptsApi, Attempt, Submission } from '../../lib/api';
 
+/**
+ * Student results page shown after test submission.
+ *
+ * Displays:
+ * - A score summary card with total earned/max and a colour-coded percentage bar
+ *   (green ≥ 70%, yellow ≥ 40%, red < 40%).
+ * - An accordion of per-question result cards. Each expanded card shows:
+ *   - The grading breakdown (criterion label, pass/fail, points, feedback string).
+ *   - A live preview of the student's submitted HTML/CSS (code questions only).
+ *   - A correct/incorrect label for MCQ questions.
+ *
+ * The first question is expanded by default.
+ */
 export default function ResultsPage() {
   const { id } = useParams<{ id: string }>();
   const [attempt, setAttempt] = useState<Attempt | null>(null);

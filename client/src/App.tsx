@@ -9,6 +9,11 @@ import StudentDashboard from './pages/student/Dashboard';
 import TestRoom from './pages/student/TestRoom';
 import ResultsPage from './pages/student/ResultsPage';
 
+/**
+ * Route guard that enforces both authentication and role.
+ * - Unauthenticated users are redirected to `/login`.
+ * - Authenticated users accessing the wrong role's route are redirected to their own dashboard.
+ */
 function RequireAuth({ children, role }: { children: React.ReactNode; role: 'lecturer' | 'student' }) {
   const user = getUser();
   if (!user) return <Navigate to="/login" replace />;
@@ -16,6 +21,13 @@ function RequireAuth({ children, role }: { children: React.ReactNode; role: 'lec
   return <>{children}</>;
 }
 
+/**
+ * Root router.
+ * Public routes: `/login`, `/register`.
+ * Protected lecturer routes: `/lecturer`, `/lecturer/tests/:id/edit`, `/lecturer/tests/:id/results`.
+ * Protected student routes: `/student`, `/student/tests/:id`, `/student/attempts/:id/results`.
+ * The index route `/` redirects to the appropriate dashboard when logged in, or to `/login` otherwise.
+ */
 export default function App() {
   const user = getUser();
 

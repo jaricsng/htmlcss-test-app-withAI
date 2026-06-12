@@ -3,6 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import { testsApi, attemptsApi, Test } from '../../lib/api';
 
+/**
+ * Student home page — lists all published tests with the student's attempt status.
+ *
+ * Each card shows one of three states:
+ * - **No attempt** — "Start Test" button; clicking creates an attempt then navigates to TestRoom.
+ * - **In progress** — "Continue" button; navigates directly to TestRoom.
+ * - **Submitted** — "View Results" link to the ResultsPage.
+ */
 export default function StudentDashboard() {
   const navigate = useNavigate();
   const [tests, setTests] = useState<Test[]>([]);

@@ -3,12 +3,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import { testsApi, Test } from '../../lib/api';
 
+/** Tailwind class pairs for each test status badge. */
 const STATUS_BADGE: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-600',
   published: 'bg-green-100 text-green-700',
   closed: 'bg-red-100 text-red-700',
 };
 
+/**
+ * Lecturer home page — lists all tests owned by the authenticated lecturer.
+ *
+ * Actions per test card: Edit (→ TestBuilder), Results (→ TestResults), Delete.
+ * The "+ New Test" button creates an untitled draft and immediately navigates
+ * to the TestBuilder so the lecturer can start editing without an extra step.
+ */
 export default function LecturerDashboard() {
   const navigate = useNavigate();
   const [tests, setTests] = useState<Test[]>([]);

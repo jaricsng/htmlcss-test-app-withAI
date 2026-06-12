@@ -1,26 +1,60 @@
 import { JSDOM } from 'jsdom';
 import * as csstree from 'css-tree';
 
+/**
+ * A single auto-grading rule attached to a code question.
+ * `dom` criteria check element presence / attribute / text content via CSS selector.
+ * `style` criteria check a CSS property value on a matched element.
+ */
 export interface Criterion {
+  /** Database primary key. */
   id: number;
+  /** Grading strategy to apply. */
   type: 'dom' | 'style' | 'mcq';
+  /** Human-readable description shown to the student in results. */
   label: string;
+  /** CSS selector identifying the target element. */
   selector?: string;
+  /** HTML attribute name to compare against `expected_value` (dom criteria only). */
   attribute?: string;
+  /** Expected attribute value, text content, or CSS value. */
   expected_value?: string;
+  /** CSS property name to check (style criteria only). */
   css_property?: string;
+  /** Points awarded when this criterion passes. */
   points: number;
 }
 
+/**
+ * The outcome of evaluating one {@link Criterion} against a submission.
+ * Returned as part of the array produced by {@link gradeSubmission}.
+ */
 export interface GradingResult {
+  /** ID of the criterion that was evaluated. */
   criterionId: number;
+  /** Human-readable criterion label, copied from the criterion. */
   label: string;
+  /** Whether the criterion passed. */
   passed: boolean;
+  /** Maximum points available for this criterion. */
   points: number;
+  /** Points actually awarded (0 or `points`). */
   earned: number;
+  /** One-line explanation of why the criterion passed or failed. */
   feedback: string;
 }
 
+/**
+ * Grades a student's HTML/CSS code submission against a set of criteria.
+ *
+ * Builds a full HTML document from `htmlCode` and `cssCode`, parses it with
+ * JSDOM and css-tree, then evaluates each criterion independently.
+ *
+ * @param htmlCode - The student's submitted HTML body content.
+ * @param cssCode  - The student's submitted CSS.
+ * @param criteria - Ordered list of criteria to evaluate.
+ * @returns `results` (per-criterion outcomes), `score` (earned points), and `maxScore` (total possible).
+ */
 export function gradeSubmission(
   htmlCode: string,
   cssCode: string,
@@ -45,6 +79,7 @@ export function gradeSubmission(
   return { results, score, maxScore };
 }
 
+/** Dispatches a single criterion to the appropriate grading function. */
 function evaluateCriterion(
   criterion: Criterion,
   document: Document,
@@ -65,6 +100,10 @@ function evaluateCriterion(
   return { ...base, passed: false, earned: 0, feedback: 'Unknown criterion type' };
 }
 
+/**
+ * Evaluates a `dom` criterion: checks element existence, optional attribute value,
+ * or optional text content against `criterion.selector`.
+ */
 function gradeDom(
   criterion: Criterion,
   document: Document,
@@ -118,8 +157,10 @@ function gradeDom(
   };
 }
 
+/** Maps CSS selector strings to a map of property → value. Built by {@link parseCssRules}. */
 type CssRuleMap = Map<string, Map<string, string>>;
 
+/** Parses raw CSS text into a {@link CssRuleMap} using css-tree. Invalid CSS is silently ignored. */
 function parseCssRules(css: string): CssRuleMap {
   const ruleMap: CssRuleMap = new Map();
   try {
@@ -144,6 +185,11 @@ function parseCssRules(css: string): CssRuleMap {
   return ruleMap;
 }
 
+/**
+ * Evaluates a `style` criterion: checks that `criterion.css_property` on the matched
+ * element equals `criterion.expected_value`. Checks inline styles first, then the
+ * parsed stylesheet rule map.
+ */
 function gradeStyle(
   criterion: Criterion,
   document: Document,
@@ -200,6 +246,7 @@ function gradeStyle(
   };
 }
 
+/** Returns true if `ruleSelector` targets the same element as `targetSelector` in the document. */
 function selectorMatches(ruleSelector: string, targetSelector: string, document: Document): boolean {
   if (ruleSelector === targetSelector) return true;
   try {
@@ -212,12 +259,16 @@ function selectorMatches(ruleSelector: string, targetSelector: string, document:
   }
 }
 
+/** Trims, lowercases, and collapses internal whitespace for case-insensitive string comparison. */
 function normalizeString(s: string): string {
   return s.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
+/**
+ * Normalises color values for comparison — converts common named colors to hex
+ * so `"red"` and `"#ff0000"` compare as equal.
+ */
 function normalizeColor(val: string): string {
-  // Normalize common color representations for comparison
   const v = val.trim().toLowerCase().replace(/\s/g, '');
   const colorNames: Record<string, string> = {
     red: '#ff0000', blue: '#0000ff', green: '#008000', black: '#000000',
@@ -226,6 +277,14 @@ function normalizeColor(val: string): string {
   return colorNames[v] ?? v;
 }
 
+/**
+ * Grades a single MCQ answer by comparing the student's selection to the correct index.
+ *
+ * @param answerIndex  - Zero-based index of the option the student selected.
+ * @param correctIndex - Zero-based index of the correct option.
+ * @param points       - Points to award for a correct answer.
+ * @returns `points` if the answer matches, otherwise `0`.
+ */
 export function gradeMcq(answerIndex: number, correctIndex: number, points: number): number {
   return answerIndex === correctIndex ? points : 0;
 }

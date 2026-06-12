@@ -3,6 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import { attemptsApi, testsApi, Attempt, TestWithQuestions } from '../../lib/api';
 
+/**
+ * Lecturer view of all student attempts for a single test.
+ *
+ * Displays a summary row (total attempts, submitted count, class average)
+ * and a sortable table of individual attempts with score, percentage progress
+ * bar, submission timestamp, and a "Details" link to the student's result breakdown.
+ */
 export default function TestResults() {
   const { id } = useParams<{ id: string }>();
   const [test, setTest] = useState<TestWithQuestions | null>(null);

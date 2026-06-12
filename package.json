@@ -1,10 +1,11 @@
 {
   "name": "htmlcss-tester",
   "private": true,
-  "workspaces": ["client", "server"],
+  "workspaces": ["client", "server", "e2e"],
   "scripts": {
     "dev": "concurrently \"npm run dev -w server\" \"npm run dev -w client\"",
-    "build": "npm run build -w server && npm run build -w client"
+    "build": "npm run build -w server && npm run build -w client",
+    "test:e2e": "npm run test -w e2e"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

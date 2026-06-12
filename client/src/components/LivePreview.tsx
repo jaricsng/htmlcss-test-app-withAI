@@ -1,12 +1,24 @@
 import { useMemo } from 'react';
 
 interface Props {
+  /** HTML body content to render inside the iframe. */
   html: string;
+  /** CSS rules to inject into the iframe's `<style>` block. */
   css: string;
+  /** Header label displayed above the preview frame (default `"Preview"`). */
   title?: string;
+  /** Additional Tailwind classes applied to the outer container. */
   className?: string;
 }
 
+/**
+ * Renders an HTML/CSS snippet inside a sandboxed `<iframe>` for live preview.
+ *
+ * Builds a complete HTML document (`srcDoc`) from `html` and `css` each time
+ * either prop changes (memoised). The iframe uses `sandbox="allow-same-origin"`
+ * which permits DOM reads but blocks scripts and form submissions, preventing
+ * student code from escaping the sandbox.
+ */
 export default function LivePreview({ html, css, title = 'Preview', className = '' }: Props) {
   const srcDoc = useMemo(() => `
     <!DOCTYPE html>
