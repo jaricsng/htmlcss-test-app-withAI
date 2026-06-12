@@ -88,7 +88,7 @@ function gradeDom(
     };
   }
 
-  if (criterion.attribute && criterion.expected_value !== undefined) {
+  if (criterion.attribute && criterion.expected_value != null) {
     const attr = element.getAttribute(criterion.attribute) ?? element.textContent ?? '';
     const pass = normalizeString(attr) === normalizeString(criterion.expected_value);
     return {
@@ -100,7 +100,7 @@ function gradeDom(
     };
   }
 
-  if (criterion.expected_value !== undefined) {
+  if (criterion.expected_value != null) {
     const text = element.textContent ?? '';
     const pass = normalizeString(text).includes(normalizeString(criterion.expected_value));
     return {

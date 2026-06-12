@@ -89,14 +89,19 @@ db.exec(`
   );
 `);
 
+// node:sqlite rejects undefined — coerce to null like better-sqlite3 does
+function coerce(params: unknown[]): SQLInputValue[] {
+  return params.map(p => (p === undefined ? null : p)) as SQLInputValue[];
+}
+
 // Thin wrapper to match better-sqlite3's API shape
 export default {
   prepare(sql: string) {
     const stmt = db.prepare(sql);
     return {
-      get: (...params: unknown[]) => stmt.get(...(params as SQLInputValue[])) ?? null,
-      all: (...params: unknown[]) => stmt.all(...(params as SQLInputValue[])),
-      run: (...params: unknown[]) => stmt.run(...(params as SQLInputValue[])),
+      get: (...params: unknown[]) => stmt.get(...coerce(params)) ?? null,
+      all: (...params: unknown[]) => stmt.all(...coerce(params)),
+      run: (...params: unknown[]) => stmt.run(...coerce(params)),
     };
   },
   exec(sql: string) {
