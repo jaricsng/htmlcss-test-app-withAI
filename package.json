@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w server\" \"npm run dev -w client\"",
-    "build": "npm run lint -w server && npm run lint -w client && npm run build -w server && npm run build -w client",
+    "build": "npm audit --omit=dev --audit-level=high && npm run lint -w server && npm run lint -w client && npm run build -w server && npm run build -w client",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
     "test:e2e": "npm run test -w e2e",
     "lint": "npm run lint -w server && npm run lint -w client",
     "lint:fix": "npm run lint:fix -w server && npm run lint:fix -w client",

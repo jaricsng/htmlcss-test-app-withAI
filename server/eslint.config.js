@@ -1,17 +1,14 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
+import security from 'eslint-plugin-security';
 
 export default tseslint.config(
-  // Ignored paths
-  {
-    ignores: ['dist/**', 'coverage/**'],
-  },
+  { ignores: ['dist/**', 'coverage/**'] },
 
-  // Source files
   {
     files: ['src/**/*.ts'],
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended, security.configs.recommended],
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -20,21 +17,31 @@ export default tseslint.config(
       },
     },
     rules: {
-      // Downgrade to warn — the routes use 'as any' for raw DB rows; acceptable short-term
       '@typescript-eslint/no-explicit-any': 'warn',
-      // Allow unused vars that start with _ (convention for intentionally unused params)
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      // Empty catch blocks are intentional in several grader try/catch blocks
       '@typescript-eslint/no-empty-object-type': 'error',
       'no-console': ['warn', { allow: ['log', 'warn', 'error'] }],
+      // security rules from eslint-plugin-security
+      'security/detect-object-injection': 'warn',
+      'security/detect-non-literal-regexp': 'warn',
+      'security/detect-unsafe-regex': 'error',
+      'security/detect-buffer-noassert': 'error',
+      'security/detect-child-process': 'warn',
+      'security/detect-disable-mustache-escape': 'error',
+      'security/detect-eval-with-expression': 'error',
+      'security/detect-new-buffer': 'error',
+      'security/detect-no-csrf-before-method-override': 'error',
+      'security/detect-possible-timing-attacks': 'warn',
+      'security/detect-pseudoRandomBytes': 'error',
     },
   },
 
-  // Test files — relax rules that are too strict for test helpers
   {
     files: ['src/__tests__/**/*.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      'security/detect-object-injection': 'off',
+      'security/detect-non-literal-regexp': 'off',
     },
   }
 );
