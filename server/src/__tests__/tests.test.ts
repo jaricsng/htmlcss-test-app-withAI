@@ -8,7 +8,9 @@ describe('Tests API', () => {
   let lecturerId: number;
 
   beforeEach(async () => {
-    db.exec('DELETE FROM submissions; DELETE FROM attempts; DELETE FROM criteria; DELETE FROM questions; DELETE FROM tests; DELETE FROM users;');
+    db.exec(
+      'DELETE FROM submissions; DELETE FROM attempts; DELETE FROM criteria; DELETE FROM questions; DELETE FROM tests; DELETE FROM users;'
+    );
     const lec = await seedUser(db, { email: 'lec@test.com', name: 'Dr Smith', role: 'lecturer' });
     const stu = await seedUser(db, { email: 'stu@test.com', name: 'Alice', role: 'student' });
     lecturerToken = lec.token;
@@ -20,7 +22,8 @@ describe('Tests API', () => {
 
   describe('POST /api/tests', () => {
     it('creates a draft test', async () => {
-      const res = await request.post('/api/tests')
+      const res = await request
+        .post('/api/tests')
         .set(bearer(lecturerToken))
         .send({ title: 'HTML Quiz', description: 'Basics', time_limit_minutes: 30 });
       expect(res.status).toBe(200);
@@ -28,13 +31,13 @@ describe('Tests API', () => {
     });
 
     it('requires a title', async () => {
-      const res = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({});
+      const res = await request.post('/api/tests').set(bearer(lecturerToken)).send({});
       expect(res.status).toBe(400);
     });
 
     it('rejects student trying to create a test', async () => {
-      const res = await request.post('/api/tests')
+      const res = await request
+        .post('/api/tests')
         .set(bearer(studentToken))
         .send({ title: 'Quiz' });
       expect(res.status).toBe(403);
@@ -62,12 +65,18 @@ describe('Tests API', () => {
   describe('GET /api/tests/available', () => {
     it('only returns published tests', async () => {
       await request.post('/api/tests').set(bearer(lecturerToken)).send({ title: 'Draft Quiz' }); // left unpublished
-      const { body: { id: pubId } } = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({ title: 'Published Quiz' });
+      const {
+        body: { id: pubId },
+      } = await request
+        .post('/api/tests')
+        .set(bearer(lecturerToken))
+        .send({ title: 'Published Quiz' });
 
       // Publish using the captured id — AUTOINCREMENT means we can't assume id=2
-      await request.put(`/api/tests/${pubId}`)
-        .set(bearer(lecturerToken)).send({ status: 'published' });
+      await request
+        .put(`/api/tests/${pubId}`)
+        .set(bearer(lecturerToken))
+        .send({ status: 'published' });
 
       const res = await request.get('/api/tests/available').set(bearer(studentToken));
       expect(res.status).toBe(200);
@@ -76,10 +85,13 @@ describe('Tests API', () => {
     });
 
     it('includes attempt_status for the requesting student', async () => {
-      const { body: { id: testId } } = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({ title: 'Q' });
-      await request.put(`/api/tests/${testId}`)
-        .set(bearer(lecturerToken)).send({ status: 'published' });
+      const {
+        body: { id: testId },
+      } = await request.post('/api/tests').set(bearer(lecturerToken)).send({ title: 'Q' });
+      await request
+        .put(`/api/tests/${testId}`)
+        .set(bearer(lecturerToken))
+        .send({ status: 'published' });
       await request.post('/api/attempts/start').set(bearer(studentToken)).send({ test_id: testId });
 
       const res = await request.get('/api/tests/available').set(bearer(studentToken));
@@ -91,11 +103,20 @@ describe('Tests API', () => {
 
   describe('GET /api/tests/:id', () => {
     it('returns test with questions and criteria for lecturer', async () => {
-      const { body: { id } } = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({ title: 'Quiz' });
-      await request.post('/api/questions')
+      const {
+        body: { id },
+      } = await request.post('/api/tests').set(bearer(lecturerToken)).send({ title: 'Quiz' });
+      await request
+        .post('/api/questions')
         .set(bearer(lecturerToken))
-        .send({ test_id: id, type: 'mcq', order_index: 0, title: 'Q1', description: 'Desc', total_points: 5 });
+        .send({
+          test_id: id,
+          type: 'mcq',
+          order_index: 0,
+          title: 'Q1',
+          description: 'Desc',
+          total_points: 5,
+        });
 
       const res = await request.get(`/api/tests/${id}`).set(bearer(lecturerToken));
       expect(res.status).toBe(200);
@@ -109,8 +130,9 @@ describe('Tests API', () => {
     });
 
     it('prevents student seeing a draft test', async () => {
-      const { body: { id } } = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({ title: 'Draft' });
+      const {
+        body: { id },
+      } = await request.post('/api/tests').set(bearer(lecturerToken)).send({ title: 'Draft' });
       const res = await request.get(`/api/tests/${id}`).set(bearer(studentToken));
       expect(res.status).toBe(403);
     });
@@ -120,10 +142,13 @@ describe('Tests API', () => {
 
   describe('PUT /api/tests/:id', () => {
     it('updates title and status', async () => {
-      const { body: { id } } = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({ title: 'Old Title' });
-      const res = await request.put(`/api/tests/${id}`)
-        .set(bearer(lecturerToken)).send({ title: 'New Title', status: 'published' });
+      const {
+        body: { id },
+      } = await request.post('/api/tests').set(bearer(lecturerToken)).send({ title: 'Old Title' });
+      const res = await request
+        .put(`/api/tests/${id}`)
+        .set(bearer(lecturerToken))
+        .send({ title: 'New Title', status: 'published' });
       expect(res.status).toBe(200);
 
       const { body } = await request.get(`/api/tests/${id}`).set(bearer(lecturerToken));
@@ -132,12 +157,19 @@ describe('Tests API', () => {
     });
 
     it("prevents editing another lecturer's test", async () => {
-      const { body: { id } } = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({ title: 'Mine' });
+      const {
+        body: { id },
+      } = await request.post('/api/tests').set(bearer(lecturerToken)).send({ title: 'Mine' });
 
-      const other = await seedUser(db, { email: 'other@test.com', name: 'Other', role: 'lecturer' });
-      const res = await request.put(`/api/tests/${id}`)
-        .set(bearer(other.token)).send({ title: 'Stolen' });
+      const other = await seedUser(db, {
+        email: 'other@test.com',
+        name: 'Other',
+        role: 'lecturer',
+      });
+      const res = await request
+        .put(`/api/tests/${id}`)
+        .set(bearer(other.token))
+        .send({ title: 'Stolen' });
       expect(res.status).toBe(404);
     });
   });
@@ -146,8 +178,9 @@ describe('Tests API', () => {
 
   describe('DELETE /api/tests/:id', () => {
     it('deletes the test and its questions', async () => {
-      const { body: { id } } = await request.post('/api/tests')
-        .set(bearer(lecturerToken)).send({ title: 'To Delete' });
+      const {
+        body: { id },
+      } = await request.post('/api/tests').set(bearer(lecturerToken)).send({ title: 'To Delete' });
       await request.delete(`/api/tests/${id}`).set(bearer(lecturerToken));
       const res = await request.get(`/api/tests/${id}`).set(bearer(lecturerToken));
       expect(res.status).toBe(404);

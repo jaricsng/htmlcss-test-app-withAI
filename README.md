@@ -19,12 +19,14 @@ A full-stack web application that allows lecturers to create and publish HTML/CS
 ## Application Overview
 
 **Lecturers** can:
+
 - Create, edit, and delete tests
 - Add MCQ questions (with configurable options and correct answer) and HTML/CSS code questions
 - Define DOM and CSS grading criteria for code questions
 - Publish tests to make them available to students
 
 **Students** can:
+
 - Browse published tests on their dashboard
 - Sit a test in a sandboxed test room with a live HTML/CSS preview panel
 - Submit answers and receive instant results with per-criterion feedback
@@ -58,6 +60,7 @@ Browser (React)
 ### Grading engine
 
 HTML/CSS submissions are graded server-side by:
+
 1. Parsing the submitted HTML via **JSDOM** to build a DOM tree
 2. Parsing submitted CSS via **css-tree** into a rule map
 3. Evaluating each criterion — `dom` (element existence / attribute / text content) or `style` (CSS property value on a selector)
@@ -69,16 +72,16 @@ MCQ answers are graded by direct index comparison.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18, React Router v6, TypeScript, Tailwind CSS |
-| Code editor | Monaco Editor (`@monaco-editor/react`) |
-| Backend | Express 4, TypeScript, `tsx` (dev), `node:sqlite` (built-in Node.js 22+) |
-| Grading | JSDOM, css-tree |
-| Auth | bcryptjs (password hashing), jsonwebtoken (JWT) |
-| Server tests | Vitest + Supertest |
-| Client tests | Vitest + React Testing Library |
-| E2E tests | Playwright (Chromium) |
+| Layer        | Technology                                                               |
+| ------------ | ------------------------------------------------------------------------ |
+| Frontend     | React 18, React Router v6, TypeScript, Tailwind CSS                      |
+| Code editor  | Monaco Editor (`@monaco-editor/react`)                                   |
+| Backend      | Express 4, TypeScript, `tsx` (dev), `node:sqlite` (built-in Node.js 22+) |
+| Grading      | JSDOM, css-tree                                                          |
+| Auth         | bcryptjs (password hashing), jsonwebtoken (JWT)                          |
+| Server tests | Vitest + Supertest                                                       |
+| Client tests | Vitest + React Testing Library                                           |
+| E2E tests    | Playwright (Chromium)                                                    |
 
 ---
 
@@ -175,11 +178,11 @@ The E2E runner starts both the Express server (with a fresh `e2e/test.db`) and t
 
 **Test counts (all passing):**
 
-| Suite | Tests |
-|---|---|
-| Server | 52 |
-| Client | 21 |
-| E2E | 21 |
+| Suite     | Tests  |
+| --------- | ------ |
+| Server    | 52     |
+| Client    | 21     |
+| E2E       | 21     |
 | **Total** | **94** |
 
 ---
@@ -195,6 +198,7 @@ The following problems were encountered during development and testing, along wi
 **Symptom:** Playwright's `getByLabel('Email')`, `getByLabel('Password')`, `getByLabel('Full Name')` could not locate any elements. 20 out of 21 E2E tests failed on the first full run.
 
 **Root cause:** Playwright's `getByLabel` locator works by ARIA association — it needs either:
+
 - A `<label>` with a matching `htmlFor` attribute wired to an `<input id="...">`, or
 - The input wrapped inside the label element, or
 - An `aria-labelledby` / `aria-label` attribute on the input.
@@ -228,11 +232,11 @@ The existing form labels in `LoginPage.tsx`, `RegisterPage.tsx`, and `TestBuilde
 
 **Fixes:**
 
-| Problem locator | Fix |
-|---|---|
-| `getByText('Available Tests')` | `page.locator('h2').filter({ hasText: 'Available Tests' })` |
-| `getByText('+ Add')` | `page.getByRole('button', { name: '+ Add' })` |
-| `getByLabel('Title')` | `page.getByLabel('Title', { exact: true })` |
+| Problem locator                   | Fix                                                         |
+| --------------------------------- | ----------------------------------------------------------- |
+| `getByText('Available Tests')`    | `page.locator('h2').filter({ hasText: 'Available Tests' })` |
+| `getByText('+ Add')`              | `page.getByRole('button', { name: '+ Add' })`               |
+| `getByLabel('Title')`             | `page.getByLabel('Title', { exact: true })`                 |
 | `getByText('Sky color question')` | `page.getByRole('heading', { name: 'Sky color question' })` |
 
 ---
@@ -244,13 +248,14 @@ The existing form labels in `LoginPage.tsx`, `RegisterPage.tsx`, and `TestBuilde
 **Root cause:** Playwright runs tests with 3 workers by default. Each worker was writing to the same `e2e/test.db` file concurrently. Node.js's built-in `node:sqlite` module uses a default busy timeout of 0ms — meaning any write that finds the database locked fails immediately with `SQLITE_BUSY`. The `TestRoom` component's `useEffect` called `Promise.all([fetchTest(), fetchAttempt()])` with no `.catch()` handler; a rejected promise left the component in an eternal loading state with no error surfaced in the UI or the test runner.
 
 **Fixes applied:**
+
 - Set `workers: 1` in `playwright.config.ts` — tests run serially, eliminating concurrent DB access.
 - Added `PRAGMA busy_timeout = 5000` in `server/src/db/schema.ts` — gives SQLite 5 seconds to retry a locked write before failing, as a safety net.
 
 ```typescript
 // server/src/db/schema.ts
 raw.exec('PRAGMA journal_mode = WAL');
-raw.exec('PRAGMA busy_timeout = 5000');  // added
+raw.exec('PRAGMA busy_timeout = 5000'); // added
 raw.exec('PRAGMA foreign_keys = ON');
 ```
 
@@ -334,7 +339,7 @@ The `page.on('pageerror', ...)` listener surfaces silent JavaScript exceptions t
 
 ### 7. MCQ options double-serialised to the database
 
-**Symptom:** MCQ options were being stored as the string `"\"[\\\"Blue\\\",\\\"Green\\\"]\""`  in the database (a JSON-stringified string inside another JSON-stringified string), causing the student TestRoom to fail to render options.
+**Symptom:** MCQ options were being stored as the string `"\"[\\\"Blue\\\",\\\"Green\\\"]\""` in the database (a JSON-stringified string inside another JSON-stringified string), causing the student TestRoom to fail to render options.
 
 **Root cause:** The seed helper in `student-flow.spec.ts` was passing `mcq_options: JSON.stringify(['Blue', 'Green', 'Red', 'Yellow'])` to the API. The server-side question route then called `JSON.stringify(mcq_options)` again before writing to SQLite, resulting in double serialisation.
 

@@ -21,20 +21,22 @@ export function makeTestsRouter(db: DbWrapper) {
   const router = Router();
 
   router.get('/my', requireAuth, requireRole('lecturer'), (req, res) => {
-    const tests = db.prepare(
-      'SELECT * FROM tests WHERE lecturer_id = ? ORDER BY created_at DESC'
-    ).all(req.user!.userId);
+    const tests = db
+      .prepare('SELECT * FROM tests WHERE lecturer_id = ? ORDER BY created_at DESC')
+      .all(req.user!.userId);
     res.json(tests);
   });
 
   router.get('/available', requireAuth, requireRole('student'), (req, res) => {
-    const tests = db.prepare(
-      `SELECT t.*, u.name as lecturer_name,
+    const tests = db
+      .prepare(
+        `SELECT t.*, u.name as lecturer_name,
        (SELECT id FROM attempts WHERE test_id = t.id AND student_id = ?) as attempt_id,
        (SELECT status FROM attempts WHERE test_id = t.id AND student_id = ?) as attempt_status
        FROM tests t JOIN users u ON t.lecturer_id = u.id
        WHERE t.status = 'published' ORDER BY t.published_at DESC`
-    ).all(req.user!.userId, req.user!.userId);
+      )
+      .all(req.user!.userId, req.user!.userId);
     res.json(tests);
   });
 
@@ -46,9 +48,9 @@ export function makeTestsRouter(db: DbWrapper) {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const questions = db.prepare(
-      'SELECT * FROM questions WHERE test_id = ? ORDER BY order_index'
-    ).all(req.params.id);
+    const questions = db
+      .prepare('SELECT * FROM questions WHERE test_id = ? ORDER BY order_index')
+      .all(req.params.id);
 
     if (req.user!.role === 'lecturer') {
       const questionsWithCriteria = questions.map((q: any) => ({
@@ -65,17 +67,19 @@ export function makeTestsRouter(db: DbWrapper) {
     const { title, description, time_limit_minutes } = req.body;
     if (!title) return res.status(400).json({ error: 'Title required' });
 
-    const result = db.prepare(
-      'INSERT INTO tests (lecturer_id, title, description, time_limit_minutes) VALUES (?, ?, ?, ?)'
-    ).run(req.user!.userId, title, description ?? null, time_limit_minutes ?? null);
+    const result = db
+      .prepare(
+        'INSERT INTO tests (lecturer_id, title, description, time_limit_minutes) VALUES (?, ?, ?, ?)'
+      )
+      .run(req.user!.userId, title, description ?? null, time_limit_minutes ?? null);
 
     res.json({ id: result.lastInsertRowid });
   });
 
   router.put('/:id', requireAuth, requireRole('lecturer'), (req, res) => {
-    const test = db.prepare(
-      'SELECT * FROM tests WHERE id = ? AND lecturer_id = ?'
-    ).get(req.params.id, req.user!.userId);
+    const test = db
+      .prepare('SELECT * FROM tests WHERE id = ? AND lecturer_id = ?')
+      .get(req.params.id, req.user!.userId);
     if (!test) return res.status(404).json({ error: 'Not found' });
 
     const { title, description, time_limit_minutes, status } = req.body;
@@ -91,8 +95,10 @@ export function makeTestsRouter(db: DbWrapper) {
   });
 
   router.delete('/:id', requireAuth, requireRole('lecturer'), (req, res) => {
-    db.prepare('DELETE FROM tests WHERE id = ? AND lecturer_id = ?')
-      .run(req.params.id, req.user!.userId);
+    db.prepare('DELETE FROM tests WHERE id = ? AND lecturer_id = ?').run(
+      req.params.id,
+      req.user!.userId
+    );
     res.json({ ok: true });
   });
 

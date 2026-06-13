@@ -12,15 +12,14 @@ export function uniqueUser(role: 'lecturer' | 'student', label = '') {
   };
 }
 
-export async function register(
-  page: Page,
-  user: ReturnType<typeof uniqueUser>,
-) {
+export async function register(page: Page, user: ReturnType<typeof uniqueUser>) {
   await page.goto('/register');
   await page.getByLabel('Full Name').fill(user.name);
   await page.getByLabel('Email').fill(user.email);
   await page.getByLabel('Password').fill(user.password);
-  await page.getByRole('button', { name: user.role === 'lecturer' ? 'Lecturer' : 'Student' }).click();
+  await page
+    .getByRole('button', { name: user.role === 'lecturer' ? 'Lecturer' : 'Student' })
+    .click();
   await page.getByRole('button', { name: 'Create Account' }).click();
   // Wait for redirect away from /register
   await page.waitForURL(url => !url.pathname.startsWith('/register'));
@@ -28,7 +27,7 @@ export async function register(
 
 export async function login(
   page: Page,
-  user: Pick<ReturnType<typeof uniqueUser>, 'email' | 'password'>,
+  user: Pick<ReturnType<typeof uniqueUser>, 'email' | 'password'>
 ) {
   await page.goto('/login');
   await page.getByLabel('Email').fill(user.email);

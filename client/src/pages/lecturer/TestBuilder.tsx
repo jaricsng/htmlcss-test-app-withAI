@@ -45,7 +45,7 @@ export default function TestBuilder() {
     setSaving(true);
     try {
       await testsApi.updateTest(test.id, { [field]: value });
-      setTest(t => t ? { ...t, [field]: value } : t);
+      setTest(t => (t ? { ...t, [field]: value } : t));
     } finally {
       setSaving(false);
     }
@@ -55,18 +55,32 @@ export default function TestBuilder() {
     if (!test) return;
     const order = test.questions.length;
     const { id: qid } = await questionsApi.createQuestion({
-      test_id: test.id, type: 'code-from-scratch', order_index: order,
-      title: `Question ${order + 1}`, description: 'Write your description here.',
-      starter_html: '', starter_css: '', reference_html: '', reference_css: '',
+      test_id: test.id,
+      type: 'code-from-scratch',
+      order_index: order,
+      title: `Question ${order + 1}`,
+      description: 'Write your description here.',
+      starter_html: '',
+      starter_css: '',
+      reference_html: '',
+      reference_css: '',
       total_points: 10,
     });
     const newQ: Question = {
-      id: qid, test_id: test.id, type: 'code-from-scratch', order_index: order,
-      title: `Question ${order + 1}`, description: 'Write your description here.',
-      starter_html: '', starter_css: '', reference_html: '', reference_css: '',
-      total_points: 10, criteria: [],
+      id: qid,
+      test_id: test.id,
+      type: 'code-from-scratch',
+      order_index: order,
+      title: `Question ${order + 1}`,
+      description: 'Write your description here.',
+      starter_html: '',
+      starter_css: '',
+      reference_html: '',
+      reference_css: '',
+      total_points: 10,
+      criteria: [],
     };
-    setTest(t => t ? { ...t, questions: [...t.questions, newQ] } : t);
+    setTest(t => (t ? { ...t, questions: [...t.questions, newQ] } : t));
     setActiveQuestion(order);
     setEditTab('question');
   }
@@ -77,7 +91,7 @@ export default function TestBuilder() {
     if (!confirm('Delete this question?')) return;
     await questionsApi.deleteQuestion(q.id);
     const updated = test.questions.filter((_, i) => i !== idx);
-    setTest(t => t ? { ...t, questions: updated } : t);
+    setTest(t => (t ? { ...t, questions: updated } : t));
     setActiveQuestion(idx > 0 ? idx - 1 : updated.length > 0 ? 0 : null);
   }
 
@@ -93,7 +107,10 @@ export default function TestBuilder() {
     });
   }
 
-  async function addCriterion(questionIdx: number, criterion: Omit<Criterion, 'id' | 'question_id'>) {
+  async function addCriterion(
+    questionIdx: number,
+    criterion: Omit<Criterion, 'id' | 'question_id'>
+  ) {
     if (!test) return;
     const q = test.questions[questionIdx];
     const { id: cid } = await questionsApi.addCriterion(q.id, criterion);
@@ -101,7 +118,10 @@ export default function TestBuilder() {
     setTest(t => {
       if (!t) return t;
       const qs = [...t.questions];
-      qs[questionIdx] = { ...qs[questionIdx], criteria: [...(qs[questionIdx].criteria ?? []), newC] };
+      qs[questionIdx] = {
+        ...qs[questionIdx],
+        criteria: [...(qs[questionIdx].criteria ?? []), newC],
+      };
       return { ...t, questions: qs };
     });
   }
@@ -122,7 +142,12 @@ export default function TestBuilder() {
 
   const currentQ = activeQuestion !== null ? test?.questions[activeQuestion] : null;
 
-  if (!test) return <Layout><div className="text-center py-12 text-gray-400">Loading…</div></Layout>;
+  if (!test)
+    return (
+      <Layout>
+        <div className="text-center py-12 text-gray-400">Loading…</div>
+      </Layout>
+    );
 
   return (
     <Layout
@@ -157,7 +182,9 @@ export default function TestBuilder() {
           {/* Test meta */}
           <div className="card p-4 space-y-3">
             <div>
-              <label className="label" htmlFor="test-title">Test Title</label>
+              <label className="label" htmlFor="test-title">
+                Test Title
+              </label>
               <input
                 id="test-title"
                 className="input"
@@ -166,7 +193,9 @@ export default function TestBuilder() {
               />
             </div>
             <div>
-              <label className="label" htmlFor="test-description">Description</label>
+              <label className="label" htmlFor="test-description">
+                Description
+              </label>
               <textarea
                 id="test-description"
                 className="input resize-none"
@@ -176,7 +205,9 @@ export default function TestBuilder() {
               />
             </div>
             <div>
-              <label className="label" htmlFor="test-time-limit">Time Limit (minutes)</label>
+              <label className="label" htmlFor="test-time-limit">
+                Time Limit (minutes)
+              </label>
               <input
                 id="test-time-limit"
                 className="input"
@@ -187,7 +218,9 @@ export default function TestBuilder() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className={`badge ${test.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+              <span
+                className={`badge ${test.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}
+              >
                 {test.status}
               </span>
               {saving && <span className="text-xs text-gray-400">Saving…</span>}
@@ -198,19 +231,28 @@ export default function TestBuilder() {
           <div className="card flex-1 overflow-hidden flex flex-col">
             <div className="p-3 border-b border-gray-100 flex items-center justify-between">
               <span className="text-sm font-medium">Questions</span>
-              <button className="text-blue-600 text-xs hover:underline" onClick={addQuestion}>+ Add</button>
+              <button className="text-blue-600 text-xs hover:underline" onClick={addQuestion}>
+                + Add
+              </button>
             </div>
             <div className="flex-1 overflow-y-auto p-2 space-y-1">
               {test.questions.map((q, i) => (
                 <button
                   key={q.id}
-                  onClick={() => { setActiveQuestion(i); setEditTab('question'); }}
+                  onClick={() => {
+                    setActiveQuestion(i);
+                    setEditTab('question');
+                  }}
                   className={`w-full text-left rounded-lg px-3 py-2 text-sm transition-colors ${
-                    activeQuestion === i ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50 text-gray-700'
+                    activeQuestion === i
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'hover:bg-gray-50 text-gray-700'
                   }`}
                 >
                   <div className="font-medium truncate">{q.title}</div>
-                  <div className="text-xs text-gray-400">{q.type} · {q.total_points}pts</div>
+                  <div className="text-xs text-gray-400">
+                    {q.type} · {q.total_points}pts
+                  </div>
                 </button>
               ))}
             </div>
@@ -228,7 +270,9 @@ export default function TestBuilder() {
                     key={tab}
                     onClick={() => setEditTab(tab)}
                     className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                      editTab === tab ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                      editTab === tab
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
                     }`}
                   >
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -272,7 +316,7 @@ export default function TestBuilder() {
             </>
           ) : (
             <div className="card flex-1 flex items-center justify-center text-gray-400">
-              Select a question or click "+ Add" to create one
+              Select a question or click &quot;+ Add&quot; to create one
             </div>
           )}
         </div>
@@ -290,7 +334,13 @@ export default function TestBuilder() {
  * (value, onChange, onBlur) to the local state copy, so edits are reflected
  * in the preview tab without requiring a round-trip.
  */
-function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: Partial<Question>) => void }) {
+function QuestionEditor({
+  question,
+  onSave,
+}: {
+  question: Question;
+  onSave: (c: Partial<Question>) => void;
+}) {
   const [local, setLocal] = useState(question);
   useEffect(() => setLocal(question), [question.id]);
 
@@ -309,11 +359,20 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
     <div className="flex-1 overflow-y-auto space-y-4 pr-1">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="label" htmlFor="q-title">Title</label>
-          <input id="q-title" className="input" defaultValue={question.title} onBlur={e => onSave({ title: e.target.value })} />
+          <label className="label" htmlFor="q-title">
+            Title
+          </label>
+          <input
+            id="q-title"
+            className="input"
+            defaultValue={question.title}
+            onBlur={e => onSave({ title: e.target.value })}
+          />
         </div>
         <div>
-          <label className="label" htmlFor="q-type">Type</label>
+          <label className="label" htmlFor="q-type">
+            Type
+          </label>
           <select
             id="q-type"
             className="input"
@@ -324,13 +383,19 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
               onSave({ type: t });
             }}
           >
-            {QUESTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            {QUESTION_TYPES.map(t => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
       <div>
-        <label className="label" htmlFor="q-description">Description / Instructions</label>
+        <label className="label" htmlFor="q-description">
+          Description / Instructions
+        </label>
         <textarea
           id="q-description"
           className="input resize-none"
@@ -341,20 +406,47 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
       </div>
 
       <div>
-        <label className="label" htmlFor="q-points">Total Points</label>
-        <input id="q-points" className="input w-32" type="number" defaultValue={question.total_points}
-          onBlur={e => onSave({ total_points: Number(e.target.value) })} />
+        <label className="label" htmlFor="q-points">
+          Total Points
+        </label>
+        <input
+          id="q-points"
+          className="input w-32"
+          type="number"
+          defaultValue={question.total_points}
+          onBlur={e => onSave({ total_points: Number(e.target.value) })}
+        />
       </div>
 
       {!isMcq && (
         <>
           <div className="grid grid-cols-2 gap-4">
-            <CodeEditor language="html" label="Starter HTML" {...field('starter_html')} height="200px" />
-            <CodeEditor language="css" label="Starter CSS" {...field('starter_css')} height="200px" />
+            <CodeEditor
+              language="html"
+              label="Starter HTML"
+              {...field('starter_html')}
+              height="200px"
+            />
+            <CodeEditor
+              language="css"
+              label="Starter CSS"
+              {...field('starter_css')}
+              height="200px"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <CodeEditor language="html" label="Reference HTML (answer)" {...field('reference_html')} height="200px" />
-            <CodeEditor language="css" label="Reference CSS (answer)" {...field('reference_css')} height="200px" />
+            <CodeEditor
+              language="html"
+              label="Reference HTML (answer)"
+              {...field('reference_html')}
+              height="200px"
+            />
+            <CodeEditor
+              language="css"
+              label="Reference CSS (answer)"
+              {...field('reference_css')}
+              height="200px"
+            />
           </div>
         </>
       )}
@@ -386,7 +478,9 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
               />
             </div>
           ))}
-          <p className="text-xs text-gray-400">Select the radio button next to the correct answer.</p>
+          <p className="text-xs text-gray-400">
+            Select the radio button next to the correct answer.
+          </p>
         </div>
       )}
     </div>
@@ -404,7 +498,9 @@ function QuestionEditor({ question, onSave }: { question: Question; onSave: (c: 
  * keeping type and points unchanged for rapid entry of similar criteria.
  */
 function CriteriaEditor({
-  question, onAdd, onDelete,
+  question,
+  onAdd,
+  onDelete,
 }: {
   question: Question;
   onAdd: (c: Omit<Criterion, 'id' | 'question_id'>) => void;
@@ -423,25 +519,44 @@ function CriteriaEditor({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     onAdd({ ...form });
-    setForm(f => ({ ...f, label: '', selector: '', attribute: '', expected_value: '', css_property: '' }));
+    setForm(f => ({
+      ...f,
+      label: '',
+      selector: '',
+      attribute: '',
+      expected_value: '',
+      css_property: '',
+    }));
   }
 
   return (
     <div className="flex-1 overflow-y-auto space-y-4">
       <div className="card p-4">
         <h3 className="font-medium mb-3 text-sm">Existing Criteria</h3>
-        {(!question.criteria || question.criteria.length === 0) ? (
+        {!question.criteria || question.criteria.length === 0 ? (
           <p className="text-sm text-gray-400">No criteria yet. Add some below.</p>
         ) : (
           <div className="space-y-2">
             {question.criteria!.map(c => (
-              <div key={c.id} className="flex items-center gap-3 text-sm bg-gray-50 rounded-lg px-3 py-2">
-                <span className={`badge ${c.type === 'dom' ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700'}`}>
+              <div
+                key={c.id}
+                className="flex items-center gap-3 text-sm bg-gray-50 rounded-lg px-3 py-2"
+              >
+                <span
+                  className={`badge ${c.type === 'dom' ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700'}`}
+                >
                   {c.type}
                 </span>
                 <span className="flex-1">{c.label}</span>
-                <span className="text-gray-500">{c.points}pt{c.points !== 1 ? 's' : ''}</span>
-                <button onClick={() => onDelete(c.id)} className="text-red-500 hover:text-red-700 text-xs">✕</button>
+                <span className="text-gray-500">
+                  {c.points}pt{c.points !== 1 ? 's' : ''}
+                </span>
+                <button
+                  onClick={() => onDelete(c.id)}
+                  className="text-red-500 hover:text-red-700 text-xs"
+                >
+                  ✕
+                </button>
               </div>
             ))}
           </div>
@@ -454,39 +569,64 @@ function CriteriaEditor({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="label">Type</label>
-              <select className="input" value={form.type}
-                onChange={e => setForm(f => ({ ...f, type: e.target.value as 'dom' | 'style' }))}>
+              <select
+                className="input"
+                value={form.type}
+                onChange={e => setForm(f => ({ ...f, type: e.target.value as 'dom' | 'style' }))}
+              >
                 <option value="dom">DOM Check</option>
                 <option value="style">CSS Style Check</option>
               </select>
             </div>
             <div>
               <label className="label">Points</label>
-              <input className="input" type="number" min={1} value={form.points}
-                onChange={e => setForm(f => ({ ...f, points: Number(e.target.value) }))} />
+              <input
+                className="input"
+                type="number"
+                min={1}
+                value={form.points}
+                onChange={e => setForm(f => ({ ...f, points: Number(e.target.value) }))}
+              />
             </div>
           </div>
           <div>
             <label className="label">Label (shown to student in results)</label>
-            <input className="input" value={form.label}
-              onChange={e => setForm(f => ({ ...f, label: e.target.value }))} required placeholder="e.g. Has a nav element" />
+            <input
+              className="input"
+              value={form.label}
+              onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
+              required
+              placeholder="e.g. Has a nav element"
+            />
           </div>
           <div>
             <label className="label">CSS Selector</label>
-            <input className="input" value={form.selector}
-              onChange={e => setForm(f => ({ ...f, selector: e.target.value }))} placeholder="e.g. nav, h1.title, #main" />
+            <input
+              className="input"
+              value={form.selector}
+              onChange={e => setForm(f => ({ ...f, selector: e.target.value }))}
+              placeholder="e.g. nav, h1.title, #main"
+            />
           </div>
           {form.type === 'dom' && (
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="label">Attribute (optional)</label>
-                <input className="input" value={form.attribute}
-                  onChange={e => setForm(f => ({ ...f, attribute: e.target.value }))} placeholder="e.g. class, href, id" />
+                <input
+                  className="input"
+                  value={form.attribute}
+                  onChange={e => setForm(f => ({ ...f, attribute: e.target.value }))}
+                  placeholder="e.g. class, href, id"
+                />
               </div>
               <div>
                 <label className="label">Expected Value (optional)</label>
-                <input className="input" value={form.expected_value}
-                  onChange={e => setForm(f => ({ ...f, expected_value: e.target.value }))} placeholder="e.g. navbar" />
+                <input
+                  className="input"
+                  value={form.expected_value}
+                  onChange={e => setForm(f => ({ ...f, expected_value: e.target.value }))}
+                  placeholder="e.g. navbar"
+                />
               </div>
             </div>
           )}
@@ -494,25 +634,41 @@ function CriteriaEditor({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="label">CSS Property</label>
-                <input className="input" value={form.css_property}
-                  onChange={e => setForm(f => ({ ...f, css_property: e.target.value }))} placeholder="e.g. color, background-color" />
+                <input
+                  className="input"
+                  value={form.css_property}
+                  onChange={e => setForm(f => ({ ...f, css_property: e.target.value }))}
+                  placeholder="e.g. color, background-color"
+                />
               </div>
               <div>
                 <label className="label">Expected Value</label>
-                <input className="input" value={form.expected_value}
-                  onChange={e => setForm(f => ({ ...f, expected_value: e.target.value }))} placeholder="e.g. red, #ff0000, 16px" />
+                <input
+                  className="input"
+                  value={form.expected_value}
+                  onChange={e => setForm(f => ({ ...f, expected_value: e.target.value }))}
+                  placeholder="e.g. red, #ff0000, 16px"
+                />
               </div>
             </div>
           )}
-          <button className="btn-primary text-sm" type="submit">Add Criterion</button>
+          <button className="btn-primary text-sm" type="submit">
+            Add Criterion
+          </button>
         </form>
       </div>
 
       <div className="card p-4 bg-blue-50 border-blue-200">
         <p className="text-xs text-blue-700 font-medium mb-1">Tips for criteria:</p>
         <ul className="text-xs text-blue-600 space-y-1 list-disc list-inside">
-          <li><strong>DOM Check</strong>: Verify an element exists, or that an attribute equals a value</li>
-          <li><strong>CSS Style Check</strong>: Verify a CSS property on a selector (from stylesheet or inline styles)</li>
+          <li>
+            <strong>DOM Check</strong>: Verify an element exists, or that an attribute equals a
+            value
+          </li>
+          <li>
+            <strong>CSS Style Check</strong>: Verify a CSS property on a selector (from stylesheet
+            or inline styles)
+          </li>
           <li>Leave Expected Value empty to just check element/property existence</li>
         </ul>
       </div>

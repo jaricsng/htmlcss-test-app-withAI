@@ -52,12 +52,12 @@ Creates a new user account and returns a JWT.
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `email` | string | Yes | Unique email address |
-| `name` | string | Yes | Display name |
-| `password` | string | Yes | Plain-text password (hashed with bcrypt, cost 10) |
-| `role` | `"lecturer"` \| `"student"` | Yes | Account role |
+| Field      | Type                        | Required | Description                                       |
+| ---------- | --------------------------- | -------- | ------------------------------------------------- |
+| `email`    | string                      | Yes      | Unique email address                              |
+| `name`     | string                      | Yes      | Display name                                      |
+| `password` | string                      | Yes      | Plain-text password (hashed with bcrypt, cost 10) |
+| `role`     | `"lecturer"` \| `"student"` | Yes      | Account role                                      |
 
 ```json
 {
@@ -84,10 +84,10 @@ Creates a new user account and returns a JWT.
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `400` | Any required field missing or role is not `lecturer`/`student` |
-| `409` | Email already registered |
+| Status | Condition                                                      |
+| ------ | -------------------------------------------------------------- |
+| `400`  | Any required field missing or role is not `lecturer`/`student` |
+| `409`  | Email already registered                                       |
 
 ---
 
@@ -99,10 +99,10 @@ Authenticates an existing user and returns a JWT.
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `email` | string | Yes | Registered email |
-| `password` | string | Yes | Account password |
+| Field      | Type   | Required | Description      |
+| ---------- | ------ | -------- | ---------------- |
+| `email`    | string | Yes      | Registered email |
+| `password` | string | Yes      | Account password |
 
 ```json
 {
@@ -127,9 +127,9 @@ Authenticates an existing user and returns a JWT.
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `401` | Email not found or password incorrect |
+| Status | Condition                             |
+| ------ | ------------------------------------- |
+| `401`  | Email not found or password incorrect |
 
 ---
 
@@ -195,9 +195,9 @@ Returns a single test with its questions. Lecturers also receive grading criteri
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `id` | integer | Test ID |
+| Parameter | Type    | Description |
+| --------- | ------- | ----------- |
+| `id`      | integer | Test ID     |
 
 **Response `200 OK` (student view):**
 
@@ -251,10 +251,10 @@ Returns a single test with its questions. Lecturers also receive grading criteri
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `403` | Student requests a non-published test |
-| `404` | Test not found |
+| Status | Condition                             |
+| ------ | ------------------------------------- |
+| `403`  | Student requests a non-published test |
+| `404`  | Test not found                        |
 
 ---
 
@@ -266,11 +266,11 @@ Creates a new draft test owned by the authenticated lecturer.
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `title` | string | Yes | Test title |
-| `description` | string | No | Freetext description |
-| `time_limit_minutes` | integer | No | Time limit; `null` means no limit |
+| Field                | Type    | Required | Description                       |
+| -------------------- | ------- | -------- | --------------------------------- |
+| `title`              | string  | Yes      | Test title                        |
+| `description`        | string  | No       | Freetext description              |
+| `time_limit_minutes` | integer | No       | Time limit; `null` means no limit |
 
 ```json
 {
@@ -288,9 +288,9 @@ Creates a new draft test owned by the authenticated lecturer.
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `400` | `title` is missing |
+| Status | Condition          |
+| ------ | ------------------ |
+| `400`  | `title` is missing |
 
 ---
 
@@ -302,18 +302,18 @@ Partially updates a test. Only the owning lecturer may update their own test. Al
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `id` | integer | Test ID |
+| Parameter | Type    | Description |
+| --------- | ------- | ----------- |
+| `id`      | integer | Test ID     |
 
 **Request body (all fields optional):**
 
-| Field | Type | Description |
-|---|---|---|
-| `title` | string | New title |
-| `description` | string | New description |
-| `time_limit_minutes` | integer | New time limit |
-| `status` | `"draft"` \| `"published"` \| `"closed"` | New status; setting `"published"` also records `published_at` |
+| Field                | Type                                     | Description                                                   |
+| -------------------- | ---------------------------------------- | ------------------------------------------------------------- |
+| `title`              | string                                   | New title                                                     |
+| `description`        | string                                   | New description                                               |
+| `time_limit_minutes` | integer                                  | New time limit                                                |
+| `status`             | `"draft"` \| `"published"` \| `"closed"` | New status; setting `"published"` also records `published_at` |
 
 ```json
 { "status": "published" }
@@ -327,9 +327,9 @@ Partially updates a test. Only the owning lecturer may update their own test. Al
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `404` | Test not found or not owned by the requester |
+| Status | Condition                                    |
+| ------ | -------------------------------------------- |
+| `404`  | Test not found or not owned by the requester |
 
 ---
 
@@ -341,9 +341,9 @@ Deletes a test and all its questions, criteria, attempts, and submissions (casca
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `id` | integer | Test ID |
+| Parameter | Type    | Description |
+| --------- | ------- | ----------- |
+| `id`      | integer | Test ID     |
 
 **Response `200 OK`:**
 
@@ -363,20 +363,20 @@ Creates a new question on a test owned by the authenticated lecturer.
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `test_id` | integer | Yes | ID of the owning test |
-| `type` | string | Yes | `"code-from-scratch"`, `"fix-the-bug"`, `"match-output"`, or `"mcq"` |
-| `title` | string | Yes | Question title |
-| `description` | string | Yes | Question instructions / prompt |
-| `order_index` | integer | No | Position in the question list (default `0`) |
-| `starter_html` | string | No | Pre-filled HTML for code questions |
-| `starter_css` | string | No | Pre-filled CSS for code questions |
-| `reference_html` | string | No | Reference HTML used in `match-output` questions |
-| `reference_css` | string | No | Reference CSS used in `match-output` questions |
-| `mcq_options` | string[] | No | Array of option strings for MCQ questions |
-| `mcq_correct_index` | integer | No | Zero-based index of the correct MCQ option |
-| `total_points` | integer | No | Maximum points for this question (default `10`) |
+| Field               | Type     | Required | Description                                                          |
+| ------------------- | -------- | -------- | -------------------------------------------------------------------- |
+| `test_id`           | integer  | Yes      | ID of the owning test                                                |
+| `type`              | string   | Yes      | `"code-from-scratch"`, `"fix-the-bug"`, `"match-output"`, or `"mcq"` |
+| `title`             | string   | Yes      | Question title                                                       |
+| `description`       | string   | Yes      | Question instructions / prompt                                       |
+| `order_index`       | integer  | No       | Position in the question list (default `0`)                          |
+| `starter_html`      | string   | No       | Pre-filled HTML for code questions                                   |
+| `starter_css`       | string   | No       | Pre-filled CSS for code questions                                    |
+| `reference_html`    | string   | No       | Reference HTML used in `match-output` questions                      |
+| `reference_css`     | string   | No       | Reference CSS used in `match-output` questions                       |
+| `mcq_options`       | string[] | No       | Array of option strings for MCQ questions                            |
+| `mcq_correct_index` | integer  | No       | Zero-based index of the correct MCQ option                           |
+| `total_points`      | integer  | No       | Maximum points for this question (default `10`)                      |
 
 ```json
 {
@@ -400,9 +400,9 @@ Creates a new question on a test owned by the authenticated lecturer.
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `403` | `test_id` does not exist or is not owned by the requester |
+| Status | Condition                                                 |
+| ------ | --------------------------------------------------------- |
+| `403`  | `test_id` does not exist or is not owned by the requester |
 
 ---
 
@@ -414,9 +414,9 @@ Partially updates a question. Only the owning lecturer may update it. All body f
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `id` | integer | Question ID |
+| Parameter | Type    | Description |
+| --------- | ------- | ----------- |
+| `id`      | integer | Question ID |
 
 **Request body:** Same shape as [POST /questions](#post-questions) minus `test_id`; all fields optional.
 
@@ -428,9 +428,9 @@ Partially updates a question. Only the owning lecturer may update it. All body f
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `403` | Question not found or test not owned by requester |
+| Status | Condition                                         |
+| ------ | ------------------------------------------------- |
+| `403`  | Question not found or test not owned by requester |
 
 ---
 
@@ -442,9 +442,9 @@ Deletes a question and its criteria (cascade).
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `id` | integer | Question ID |
+| Parameter | Type    | Description |
+| --------- | ------- | ----------- |
+| `id`      | integer | Question ID |
 
 **Response `200 OK`:**
 
@@ -454,9 +454,9 @@ Deletes a question and its criteria (cascade).
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `403` | Question not found or test not owned by requester |
+| Status | Condition                                         |
+| ------ | ------------------------------------------------- |
+| `403`  | Question not found or test not owned by requester |
 
 ---
 
@@ -468,23 +468,24 @@ Adds a grading criterion to a code question.
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `id` | integer | Question ID |
+| Parameter | Type    | Description |
+| --------- | ------- | ----------- |
+| `id`      | integer | Question ID |
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `type` | `"dom"` \| `"style"` | Yes | Criterion type |
-| `label` | string | Yes | Human-readable description shown to students in results |
-| `selector` | string | No | CSS selector to target the element being checked |
-| `attribute` | string | No | HTML attribute name (for `dom` criteria with attribute checks) |
-| `expected_value` | string | No | Expected attribute value or text content |
-| `css_property` | string | No | CSS property name to check (for `style` criteria) |
-| `points` | integer | No | Points awarded when criterion passes (default `1`) |
+| Field            | Type                 | Required | Description                                                    |
+| ---------------- | -------------------- | -------- | -------------------------------------------------------------- |
+| `type`           | `"dom"` \| `"style"` | Yes      | Criterion type                                                 |
+| `label`          | string               | Yes      | Human-readable description shown to students in results        |
+| `selector`       | string               | No       | CSS selector to target the element being checked               |
+| `attribute`      | string               | No       | HTML attribute name (for `dom` criteria with attribute checks) |
+| `expected_value` | string               | No       | Expected attribute value or text content                       |
+| `css_property`   | string               | No       | CSS property name to check (for `style` criteria)              |
+| `points`         | integer              | No       | Points awarded when criterion passes (default `1`)             |
 
 **`dom` criterion — element existence:**
+
 ```json
 {
   "type": "dom",
@@ -495,6 +496,7 @@ Adds a grading criterion to a code question.
 ```
 
 **`dom` criterion — attribute value:**
+
 ```json
 {
   "type": "dom",
@@ -507,6 +509,7 @@ Adds a grading criterion to a code question.
 ```
 
 **`style` criterion — CSS property:**
+
 ```json
 {
   "type": "style",
@@ -526,9 +529,9 @@ Adds a grading criterion to a code question.
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `403` | Question not found or test not owned by requester |
+| Status | Condition                                         |
+| ------ | ------------------------------------------------- |
+| `403`  | Question not found or test not owned by requester |
 
 ---
 
@@ -540,8 +543,8 @@ Deletes a grading criterion.
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
+| Parameter     | Type    | Description  |
+| ------------- | ------- | ------------ |
 | `criterionId` | integer | Criterion ID |
 
 **Response `200 OK`:**
@@ -552,9 +555,9 @@ Deletes a grading criterion.
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `403` | Criterion not found or test not owned by requester |
+| Status | Condition                                          |
+| ------ | -------------------------------------------------- |
+| `403`  | Criterion not found or test not owned by requester |
 
 ---
 
@@ -568,9 +571,9 @@ Starts a test attempt for the authenticated student. If an attempt already exist
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `test_id` | integer | Yes | ID of the published test to sit |
+| Field     | Type    | Required | Description                     |
+| --------- | ------- | -------- | ------------------------------- |
+| `test_id` | integer | Yes      | ID of the published test to sit |
 
 ```json
 { "test_id": 1 }
@@ -596,10 +599,10 @@ Starts a test attempt for the authenticated student. If an attempt already exist
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `400` | Attempt already submitted |
-| `404` | Test not found or not published |
+| Status | Condition                       |
+| ------ | ------------------------------- |
+| `400`  | Attempt already submitted       |
+| `404`  | Test not found or not published |
 
 ---
 
@@ -611,17 +614,17 @@ Saves or updates the student's answer for one question in an active attempt. Use
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `attemptId` | integer | Attempt ID |
+| Parameter    | Type    | Description |
+| ------------ | ------- | ----------- |
+| `attemptId`  | integer | Attempt ID  |
 | `questionId` | integer | Question ID |
 
 **Request body (all fields optional):**
 
-| Field | Type | Description |
-|---|---|---|
-| `html_code` | string | Student's HTML submission (code questions) |
-| `css_code` | string | Student's CSS submission (code questions) |
+| Field              | Type    | Description                                      |
+| ------------------ | ------- | ------------------------------------------------ |
+| `html_code`        | string  | Student's HTML submission (code questions)       |
+| `css_code`         | string  | Student's CSS submission (code questions)        |
 | `mcq_answer_index` | integer | Zero-based selected option index (MCQ questions) |
 
 ```json
@@ -636,9 +639,9 @@ Saves or updates the student's answer for one question in an active attempt. Use
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `400` | Attempt not found, belongs to another student, or already submitted |
+| Status | Condition                                                           |
+| ------ | ------------------------------------------------------------------- |
+| `400`  | Attempt not found, belongs to another student, or already submitted |
 
 ---
 
@@ -650,13 +653,14 @@ Finalises the attempt, grades all questions, and records scores. After submissio
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `attemptId` | integer | Attempt ID |
+| Parameter   | Type    | Description |
+| ----------- | ------- | ----------- |
+| `attemptId` | integer | Attempt ID  |
 
 **Request body:** Empty `{}`
 
 **Grading behaviour:**
+
 - **MCQ questions** — compares `mcq_answer_index` against `mcq_correct_index`; full points for a match, zero otherwise.
 - **Code questions with criteria** — HTML/CSS is parsed server-side (JSDOM + css-tree); each criterion is evaluated independently. DOM criteria check element presence, attribute values, or text content. Style criteria check computed or declared CSS property values.
 - **Code questions with no criteria** — score remains 0.
@@ -687,9 +691,9 @@ Finalises the attempt, grades all questions, and records scores. After submissio
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `400` | Attempt not found, belongs to another student, or already submitted |
+| Status | Condition                                                           |
+| ------ | ------------------------------------------------------------------- |
+| `400`  | Attempt not found, belongs to another student, or already submitted |
 
 ---
 
@@ -701,9 +705,9 @@ Returns a completed attempt with per-question grading detail.
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `attemptId` | integer | Attempt ID |
+| Parameter   | Type    | Description |
+| ----------- | ------- | ----------- |
+| `attemptId` | integer | Attempt ID  |
 
 **Response `200 OK`:**
 
@@ -745,10 +749,10 @@ Returns a completed attempt with per-question grading detail.
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `403` | Student requesting another student's results |
-| `404` | Attempt not found |
+| Status | Condition                                    |
+| ------ | -------------------------------------------- |
+| `403`  | Student requesting another student's results |
+| `404`  | Attempt not found                            |
 
 ---
 
@@ -760,9 +764,9 @@ Returns all submitted attempts for a test, aggregated with total scores per stud
 
 **Path parameters:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `testId` | integer | Test ID |
+| Parameter | Type    | Description |
+| --------- | ------- | ----------- |
+| `testId`  | integer | Test ID     |
 
 **Response `200 OK`:**
 
@@ -785,9 +789,9 @@ Returns all submitted attempts for a test, aggregated with total scores per stud
 
 **Error responses:**
 
-| Status | Condition |
-|---|---|
-| `404` | Test not found or not owned by requester |
+| Status | Condition                                |
+| ------ | ---------------------------------------- |
+| `404`  | Test not found or not owned by requester |
 
 ---
 
@@ -811,13 +815,13 @@ All error responses follow a consistent shape:
 { "error": "<human-readable message>" }
 ```
 
-| HTTP Status | Meaning |
-|---|---|
-| `400 Bad Request` | Missing required field, invalid input, or operation not allowed in current state |
-| `401 Unauthorized` | No token provided or token is invalid/expired |
-| `403 Forbidden` | Authenticated but wrong role, or resource belongs to another user |
-| `404 Not Found` | Resource does not exist (or does not belong to the requester) |
-| `409 Conflict` | Unique constraint violation (e.g. duplicate email) |
+| HTTP Status        | Meaning                                                                          |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `400 Bad Request`  | Missing required field, invalid input, or operation not allowed in current state |
+| `401 Unauthorized` | No token provided or token is invalid/expired                                    |
+| `403 Forbidden`    | Authenticated but wrong role, or resource belongs to another user                |
+| `404 Not Found`    | Resource does not exist (or does not belong to the requester)                    |
+| `409 Conflict`     | Unique constraint violation (e.g. duplicate email)                               |
 
 ---
 
@@ -825,85 +829,85 @@ All error responses follow a consistent shape:
 
 ### User
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key |
-| `email` | string | Unique |
-| `name` | string | Display name |
-| `role` | `"lecturer"` \| `"student"` | |
-| `created_at` | integer | Unix timestamp |
+| Field        | Type                        | Notes          |
+| ------------ | --------------------------- | -------------- |
+| `id`         | integer                     | Primary key    |
+| `email`      | string                      | Unique         |
+| `name`       | string                      | Display name   |
+| `role`       | `"lecturer"` \| `"student"` |                |
+| `created_at` | integer                     | Unix timestamp |
 
 ### Test
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key |
-| `lecturer_id` | integer | FK → users.id |
-| `title` | string | |
-| `description` | string \| null | |
-| `time_limit_minutes` | integer \| null | `null` = no limit |
-| `status` | `"draft"` \| `"published"` \| `"closed"` | |
-| `created_at` | integer | Unix timestamp |
-| `published_at` | integer \| null | Unix timestamp; set when status becomes `"published"` |
+| Field                | Type                                     | Notes                                                 |
+| -------------------- | ---------------------------------------- | ----------------------------------------------------- |
+| `id`                 | integer                                  | Primary key                                           |
+| `lecturer_id`        | integer                                  | FK → users.id                                         |
+| `title`              | string                                   |                                                       |
+| `description`        | string \| null                           |                                                       |
+| `time_limit_minutes` | integer \| null                          | `null` = no limit                                     |
+| `status`             | `"draft"` \| `"published"` \| `"closed"` |                                                       |
+| `created_at`         | integer                                  | Unix timestamp                                        |
+| `published_at`       | integer \| null                          | Unix timestamp; set when status becomes `"published"` |
 
 ### Question
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key |
-| `test_id` | integer | FK → tests.id, cascade delete |
-| `type` | string | `"code-from-scratch"`, `"fix-the-bug"`, `"match-output"`, `"mcq"` |
-| `order_index` | integer | Display order |
-| `title` | string | |
-| `description` | string | Question instructions |
-| `starter_html` | string | Pre-filled HTML (code questions) |
-| `starter_css` | string | Pre-filled CSS (code questions) |
-| `reference_html` | string | Reference HTML (match-output) |
-| `reference_css` | string | Reference CSS (match-output) |
-| `mcq_options` | string \| null | JSON-serialised array of option strings |
-| `mcq_correct_index` | integer \| null | Zero-based correct option |
-| `total_points` | integer | Maximum marks |
+| Field               | Type            | Notes                                                             |
+| ------------------- | --------------- | ----------------------------------------------------------------- |
+| `id`                | integer         | Primary key                                                       |
+| `test_id`           | integer         | FK → tests.id, cascade delete                                     |
+| `type`              | string          | `"code-from-scratch"`, `"fix-the-bug"`, `"match-output"`, `"mcq"` |
+| `order_index`       | integer         | Display order                                                     |
+| `title`             | string          |                                                                   |
+| `description`       | string          | Question instructions                                             |
+| `starter_html`      | string          | Pre-filled HTML (code questions)                                  |
+| `starter_css`       | string          | Pre-filled CSS (code questions)                                   |
+| `reference_html`    | string          | Reference HTML (match-output)                                     |
+| `reference_css`     | string          | Reference CSS (match-output)                                      |
+| `mcq_options`       | string \| null  | JSON-serialised array of option strings                           |
+| `mcq_correct_index` | integer \| null | Zero-based correct option                                         |
+| `total_points`      | integer         | Maximum marks                                                     |
 
 ### Criterion
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key |
-| `question_id` | integer | FK → questions.id, cascade delete |
-| `type` | `"dom"` \| `"style"` | |
-| `label` | string | Shown to students in results |
-| `selector` | string \| null | CSS selector |
-| `attribute` | string \| null | HTML attribute to check |
-| `expected_value` | string \| null | Expected value |
-| `css_property` | string \| null | CSS property to check |
-| `points` | integer | Points awarded on pass |
+| Field            | Type                 | Notes                             |
+| ---------------- | -------------------- | --------------------------------- |
+| `id`             | integer              | Primary key                       |
+| `question_id`    | integer              | FK → questions.id, cascade delete |
+| `type`           | `"dom"` \| `"style"` |                                   |
+| `label`          | string               | Shown to students in results      |
+| `selector`       | string \| null       | CSS selector                      |
+| `attribute`      | string \| null       | HTML attribute to check           |
+| `expected_value` | string \| null       | Expected value                    |
+| `css_property`   | string \| null       | CSS property to check             |
+| `points`         | integer              | Points awarded on pass            |
 
 ### Attempt
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key |
-| `test_id` | integer | FK → tests.id |
-| `student_id` | integer | FK → users.id |
-| `status` | `"in_progress"` \| `"submitted"` | |
-| `started_at` | integer | Unix timestamp |
-| `submitted_at` | integer \| null | Unix timestamp; set on submit |
+| Field          | Type                             | Notes                         |
+| -------------- | -------------------------------- | ----------------------------- |
+| `id`           | integer                          | Primary key                   |
+| `test_id`      | integer                          | FK → tests.id                 |
+| `student_id`   | integer                          | FK → users.id                 |
+| `status`       | `"in_progress"` \| `"submitted"` |                               |
+| `started_at`   | integer                          | Unix timestamp                |
+| `submitted_at` | integer \| null                  | Unix timestamp; set on submit |
 
 One attempt per student per test (enforced by UNIQUE constraint).
 
 ### Submission
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key |
-| `attempt_id` | integer | FK → attempts.id |
-| `question_id` | integer | FK → questions.id |
-| `html_code` | string | Student's HTML |
-| `css_code` | string | Student's CSS |
-| `mcq_answer_index` | integer \| null | Selected MCQ option |
-| `score` | integer | Earned points (set on submit) |
-| `max_score` | integer | Maximum points (set on submit) |
-| `grading_results` | string \| null | JSON-serialised `GradingResult[]` |
-| `submitted_at` | integer | Unix timestamp of last save |
+| Field              | Type            | Notes                             |
+| ------------------ | --------------- | --------------------------------- |
+| `id`               | integer         | Primary key                       |
+| `attempt_id`       | integer         | FK → attempts.id                  |
+| `question_id`      | integer         | FK → questions.id                 |
+| `html_code`        | string          | Student's HTML                    |
+| `css_code`         | string          | Student's CSS                     |
+| `mcq_answer_index` | integer \| null | Selected MCQ option               |
+| `score`            | integer         | Earned points (set on submit)     |
+| `max_score`        | integer         | Maximum points (set on submit)    |
+| `grading_results`  | string \| null  | JSON-serialised `GradingResult[]` |
+| `submitted_at`     | integer         | Unix timestamp of last save       |
 
 One submission per question per attempt (enforced by UNIQUE constraint; upserted on each save).

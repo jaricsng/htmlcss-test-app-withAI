@@ -20,7 +20,8 @@ interface Props {
  * student code from escaping the sandbox.
  */
 export default function LivePreview({ html, css, title = 'Preview', className = '' }: Props) {
-  const srcDoc = useMemo(() => `
+  const srcDoc = useMemo(
+    () => `
     <!DOCTYPE html>
     <html>
       <head>
@@ -33,7 +34,9 @@ export default function LivePreview({ html, css, title = 'Preview', className = 
       </head>
       <body>${html}</body>
     </html>
-  `, [html, css]);
+  `,
+    [html, css]
+  );
 
   return (
     <div className={`flex flex-col border border-gray-200 rounded-lg overflow-hidden ${className}`}>

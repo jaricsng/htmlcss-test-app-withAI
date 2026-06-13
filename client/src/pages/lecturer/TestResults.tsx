@@ -18,13 +18,12 @@ export default function TestResults() {
 
   useEffect(() => {
     if (!id) return;
-    Promise.all([
-      testsApi.getTest(Number(id)),
-      attemptsApi.testResults(Number(id)),
-    ]).then(([t, a]) => {
-      setTest(t);
-      setAttempts(a);
-    }).finally(() => setLoading(false));
+    Promise.all([testsApi.getTest(Number(id)), attemptsApi.testResults(Number(id))])
+      .then(([t, a]) => {
+        setTest(t);
+        setAttempts(a);
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
   const submitted = attempts.filter(a => a.status === 'submitted');
@@ -39,11 +38,15 @@ export default function TestResults() {
     <Layout
       title={`Results: ${test?.title ?? ''}`}
       actions={
-        <Link to={`/lecturer/tests/${id}/edit`} className="btn-secondary text-xs">Edit Test</Link>
+        <Link to={`/lecturer/tests/${id}/edit`} className="btn-secondary text-xs">
+          Edit Test
+        </Link>
       }
     >
       <div className="mb-6 flex items-center gap-3">
-        <Link to="/lecturer" className="text-sm text-blue-600 hover:underline">← Back</Link>
+        <Link to="/lecturer" className="text-sm text-blue-600 hover:underline">
+          ← Back
+        </Link>
         <h2 className="text-2xl font-bold">{test?.title}</h2>
       </div>
 
@@ -87,7 +90,9 @@ export default function TestResults() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {attempts.map(a => {
-                    const pct = a.total_max ? Math.round(((a.total_score ?? 0) / a.total_max) * 100) : 0;
+                    const pct = a.total_max
+                      ? Math.round(((a.total_score ?? 0) / a.total_max) * 100)
+                      : 0;
                     return (
                       <tr key={a.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3">
@@ -95,7 +100,9 @@ export default function TestResults() {
                           <div className="text-xs text-gray-400">{a.student_email}</div>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`badge ${a.status === 'submitted' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                          <span
+                            className={`badge ${a.status === 'submitted' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}
+                          >
                             {a.status}
                           </span>
                         </td>
@@ -113,14 +120,19 @@ export default function TestResults() {
                               </div>
                               <span>{pct}%</span>
                             </div>
-                          ) : '—'}
+                          ) : (
+                            '—'
+                          )}
                         </td>
                         <td className="px-4 py-3 text-gray-500">
                           {a.submitted_at ? new Date(a.submitted_at * 1000).toLocaleString() : '—'}
                         </td>
                         <td className="px-4 py-3">
                           {a.status === 'submitted' && (
-                            <Link to={`/student/attempts/${a.id}/results`} className="text-blue-600 hover:underline text-xs">
+                            <Link
+                              to={`/student/attempts/${a.id}/results`}
+                              className="text-blue-600 hover:underline text-xs"
+                            >
                               Details
                             </Link>
                           )}

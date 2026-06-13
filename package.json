@@ -1,13 +1,22 @@
 {
   "name": "htmlcss-tester",
   "private": true,
-  "workspaces": ["client", "server", "e2e"],
+  "workspaces": [
+    "client",
+    "server",
+    "e2e"
+  ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w server\" \"npm run dev -w client\"",
-    "build": "npm run build -w server && npm run build -w client",
-    "test:e2e": "npm run test -w e2e"
+    "build": "npm run lint -w server && npm run lint -w client && npm run build -w server && npm run build -w client",
+    "test:e2e": "npm run test -w e2e",
+    "lint": "npm run lint -w server && npm run lint -w client",
+    "lint:fix": "npm run lint:fix -w server && npm run lint:fix -w client",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "prettier": "^3.8.4"
   }
 }

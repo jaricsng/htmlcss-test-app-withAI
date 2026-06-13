@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+*.db
+*.db-wal
+*.db-shm
+package-lock.json
+e2e/test-results

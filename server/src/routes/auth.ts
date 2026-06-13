@@ -28,9 +28,9 @@ export function makeAuthRouter(db: DbWrapper) {
     if (existing) return res.status(409).json({ error: 'Email already registered' });
 
     const hash = await bcrypt.hash(password, 10);
-    const result = db.prepare(
-      'INSERT INTO users (email, name, password_hash, role) VALUES (?, ?, ?, ?)'
-    ).run(email, name, hash, role);
+    const result = db
+      .prepare('INSERT INTO users (email, name, password_hash, role) VALUES (?, ?, ?, ?)')
+      .run(email, name, hash, role);
 
     const token = signToken({ userId: result.lastInsertRowid as number, role, name });
     res.json({ token, user: { id: result.lastInsertRowid, email, name, role } });

@@ -1,13 +1,15 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { createTestApp, seedUser, bearer } from './helpers.js';
+import { createTestApp, seedUser } from './helpers.js';
 
 describe('POST /api/auth/register', () => {
   const { request } = createTestApp();
 
   it('registers a new lecturer and returns a token', async () => {
     const res = await request.post('/api/auth/register').send({
-      email: 'lecturer@test.com', name: 'Dr Smith',
-      password: 'pass123', role: 'lecturer',
+      email: 'lecturer@test.com',
+      name: 'Dr Smith',
+      password: 'pass123',
+      role: 'lecturer',
     });
     expect(res.status).toBe(200);
     expect(res.body.token).toBeTruthy();
@@ -18,8 +20,10 @@ describe('POST /api/auth/register', () => {
 
   it('registers a new student and returns a token', async () => {
     const res = await request.post('/api/auth/register').send({
-      email: 'student@test.com', name: 'Alice',
-      password: 'pass123', role: 'student',
+      email: 'student@test.com',
+      name: 'Alice',
+      password: 'pass123',
+      role: 'student',
     });
     expect(res.status).toBe(200);
     expect(res.body.user.role).toBe('student');
@@ -27,10 +31,16 @@ describe('POST /api/auth/register', () => {
 
   it('rejects duplicate email with 409', async () => {
     await request.post('/api/auth/register').send({
-      email: 'dup@test.com', name: 'A', password: 'p', role: 'student',
+      email: 'dup@test.com',
+      name: 'A',
+      password: 'p',
+      role: 'student',
     });
     const res = await request.post('/api/auth/register').send({
-      email: 'dup@test.com', name: 'B', password: 'p', role: 'student',
+      email: 'dup@test.com',
+      name: 'B',
+      password: 'p',
+      role: 'student',
     });
     expect(res.status).toBe(409);
     expect(res.body.error).toMatch(/already registered/i);
@@ -38,7 +48,10 @@ describe('POST /api/auth/register', () => {
 
   it('rejects invalid role with 400', async () => {
     const res = await request.post('/api/auth/register').send({
-      email: 'x@test.com', name: 'X', password: 'p', role: 'admin',
+      email: 'x@test.com',
+      name: 'X',
+      password: 'p',
+      role: 'admin',
     });
     expect(res.status).toBe(400);
   });
@@ -59,7 +72,8 @@ describe('POST /api/auth/login', () => {
 
   it('returns a token for valid credentials', async () => {
     const res = await request.post('/api/auth/login').send({
-      email: 'user@test.com', password: 'password123',
+      email: 'user@test.com',
+      password: 'password123',
     });
     expect(res.status).toBe(200);
     expect(res.body.token).toBeTruthy();
@@ -68,7 +82,8 @@ describe('POST /api/auth/login', () => {
 
   it('rejects wrong password with 401', async () => {
     const res = await request.post('/api/auth/login').send({
-      email: 'user@test.com', password: 'wrongpass',
+      email: 'user@test.com',
+      password: 'wrongpass',
     });
     expect(res.status).toBe(401);
     expect(res.body.error).toMatch(/invalid credentials/i);
@@ -76,7 +91,8 @@ describe('POST /api/auth/login', () => {
 
   it('rejects unknown email with 401', async () => {
     const res = await request.post('/api/auth/login').send({
-      email: 'nobody@test.com', password: 'password123',
+      email: 'nobody@test.com',
+      password: 'password123',
     });
     expect(res.status).toBe(401);
   });

@@ -18,7 +18,10 @@ export default function StudentDashboard() {
   const [starting, setStarting] = useState<number | null>(null);
 
   useEffect(() => {
-    testsApi.availableTests().then(setTests).finally(() => setLoading(false));
+    testsApi
+      .availableTests()
+      .then(setTests)
+      .finally(() => setLoading(false));
   }, []);
 
   async function startTest(testId: number) {
@@ -60,12 +63,17 @@ export default function StudentDashboard() {
                     <span>By {test.lecturer_name}</span>
                     {test.time_limit_minutes && <span>· {test.time_limit_minutes} min</span>}
                     {done && <span className="text-green-600 font-medium">· Submitted</span>}
-                    {inProgress && <span className="text-yellow-600 font-medium">· In Progress</span>}
+                    {inProgress && (
+                      <span className="text-yellow-600 font-medium">· In Progress</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   {done ? (
-                    <Link to={`/student/attempts/${test.attempt_id}/results`} className="btn-secondary text-xs">
+                    <Link
+                      to={`/student/attempts/${test.attempt_id}/results`}
+                      className="btn-secondary text-xs"
+                    >
                       View Results
                     </Link>
                   ) : (

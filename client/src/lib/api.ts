@@ -63,7 +63,8 @@ export const testsApi = {
 /** Question and grading-criteria management (lecturer-only operations). */
 export const questionsApi = {
   createQuestion: (data: Partial<Question>) => api.post<{ id: number }>('/questions', data),
-  updateQuestion: (id: number, data: Partial<Question>) => api.put<{ ok: boolean }>(`/questions/${id}`, data),
+  updateQuestion: (id: number, data: Partial<Question>) =>
+    api.put<{ ok: boolean }>(`/questions/${id}`, data),
   deleteQuestion: (id: number) => api.delete<{ ok: boolean }>(`/questions/${id}`),
   addCriterion: (questionId: number, data: Partial<Criterion>) =>
     api.post<{ id: number }>(`/questions/${questionId}/criteria`, data),
@@ -81,12 +82,15 @@ export const questionsApi = {
  */
 export const attemptsApi = {
   start: (testId: number) =>
-    api.post<{ attempt: Attempt; submissions: Submission[] }>('/attempts/start', { test_id: testId }),
+    api.post<{ attempt: Attempt; submissions: Submission[] }>('/attempts/start', {
+      test_id: testId,
+    }),
   saveProgress: (attemptId: number, questionId: number, data: Partial<Submission>) =>
     api.put<{ ok: boolean }>(`/attempts/${attemptId}/questions/${questionId}`, data),
   submit: (attemptId: number) =>
     api.post<{ ok: boolean; score: number; maxScore: number; submissions: Submission[] }>(
-      `/attempts/${attemptId}/submit`, {}
+      `/attempts/${attemptId}/submit`,
+      {}
     ),
   getResults: (attemptId: number) =>
     api.get<{ attempt: Attempt; submissions: Submission[] }>(`/attempts/${attemptId}/results`),

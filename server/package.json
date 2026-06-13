@@ -8,7 +8,11 @@
     "start": "node --experimental-sqlite dist/index.js",
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest --reporter=verbose",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -19,6 +23,7 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/css-tree": "^2.3.11",
@@ -27,9 +32,12 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^22.0.0",
     "@types/supertest": "^7.2.0",
+    "eslint": "^9.39.4",
+    "globals": "^15.15.0",
     "supertest": "^7.2.2",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
+    "typescript-eslint": "^8.61.0",
     "vitest": "^4.1.8"
   }
 }

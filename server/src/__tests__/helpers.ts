@@ -18,9 +18,9 @@ export async function seedUser(
   opts: { email: string; name: string; role: 'lecturer' | 'student' }
 ) {
   const hash = await bcrypt.hash('password123', 4); // low rounds = fast in tests
-  const result = db.prepare(
-    'INSERT INTO users (email, name, password_hash, role) VALUES (?, ?, ?, ?)'
-  ).run(opts.email, opts.name, hash, opts.role);
+  const result = db
+    .prepare('INSERT INTO users (email, name, password_hash, role) VALUES (?, ?, ?, ?)')
+    .run(opts.email, opts.name, hash, opts.role);
   const userId = result.lastInsertRowid as number;
   const token = signToken({ userId, role: opts.role, name: opts.name });
   return { userId, token };

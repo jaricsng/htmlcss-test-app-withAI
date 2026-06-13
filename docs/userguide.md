@@ -40,11 +40,11 @@
 
 ## 1. Prerequisites
 
-| Requirement | Minimum version | Notes |
-| --- | --- | --- |
-| Node.js | **22.0** | Required for the built-in `node:sqlite` module |
-| npm | **10.0** | Bundled with Node.js 22+ |
-| A modern browser | Chrome 110+ / Firefox 115+ / Edge 110+ | Safari is untested |
+| Requirement      | Minimum version                        | Notes                                          |
+| ---------------- | -------------------------------------- | ---------------------------------------------- |
+| Node.js          | **22.0**                               | Required for the built-in `node:sqlite` module |
+| npm              | **10.0**                               | Bundled with Node.js 22+                       |
+| A modern browser | Chrome 110+ / Firefox 115+ / Edge 110+ | Safari is untested                             |
 
 Check your versions:
 
@@ -81,10 +81,10 @@ npm run dev
 
 This starts:
 
-| Process | URL | Notes |
-| --- | --- | --- |
-| Express API server | `http://localhost:3001` | Reads/writes `data/app.db` (auto-created) |
-| Vite client dev server | `http://localhost:5173` | Proxies `/api/*` requests to port 3001 |
+| Process                | URL                     | Notes                                     |
+| ---------------------- | ----------------------- | ----------------------------------------- |
+| Express API server     | `http://localhost:3001` | Reads/writes `data/app.db` (auto-created) |
+| Vite client dev server | `http://localhost:5173` | Proxies `/api/*` requests to port 3001    |
 
 Open **`http://localhost:5173`** in your browser to use the application.
 
@@ -162,6 +162,7 @@ Click the **Logout** button in the top-right corner of any page. Your session is
 After logging in you land on the **My Tests** dashboard (`/lecturer`).
 
 Each test card displays:
+
 - Test title and optional description
 - Status badge — `draft`, `published`, or `closed`
 - Creation date and time limit (if set)
@@ -182,10 +183,10 @@ If you have no tests yet, a prompt to **Create your first test** is shown.
 
 The **left sidebar** of the Test Builder contains the test-level settings:
 
-| Field | Description |
-| --- | --- |
-| **Test Title** | The name students see on their dashboard. Saved automatically when you click away from the field. |
-| **Description** | Optional summary shown on the student dashboard card. |
+| Field                    | Description                                                                                                |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **Test Title**           | The name students see on their dashboard. Saved automatically when you click away from the field.          |
+| **Description**          | Optional summary shown on the student dashboard card.                                                      |
 | **Time Limit (minutes)** | Leave blank for no limit. When set, students see a countdown timer that auto-submits when it reaches zero. |
 
 All fields save on **blur** (when you click out of the field). A small "Saving…" indicator appears briefly.
@@ -198,12 +199,12 @@ All fields save on **blur** (when you click out of the field). A small "Saving�
 2. A new question is created with default values and the **Question** tab opens on the right.
 3. Set the question **Type** using the dropdown:
 
-| Type | Description |
-| --- | --- |
-| **Code from Scratch** | Student writes HTML/CSS from nothing. |
-| **Fix the Bug** | Student is given broken starter code to repair. |
-| **Match the Output** | Student reproduces a reference screenshot using HTML/CSS. |
-| **Multiple Choice** | Student selects one option from a list. |
+| Type                  | Description                                               |
+| --------------------- | --------------------------------------------------------- |
+| **Code from Scratch** | Student writes HTML/CSS from nothing.                     |
+| **Fix the Bug**       | Student is given broken starter code to repair.           |
+| **Match the Output**  | Student reproduces a reference screenshot using HTML/CSS. |
+| **Multiple Choice**   | Student selects one option from a list.                   |
 
 4. Fill in the **Title** (the question heading students see) and **Description / Instructions** (the full question text).
 5. Set **Total Points** for this question.
@@ -227,12 +228,12 @@ When the question type is **Multiple Choice**, the editor shows an **Answer Opti
 
 For code-type questions the editor shows four **Monaco editor** panels:
 
-| Panel | Purpose |
-| --- | --- |
-| **Starter HTML** | HTML pre-loaded into the student's editor when they open the question. Leave blank for code-from-scratch questions. |
-| **Starter CSS** | CSS pre-loaded alongside the starter HTML. |
+| Panel              | Purpose                                                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| **Starter HTML**   | HTML pre-loaded into the student's editor when they open the question. Leave blank for code-from-scratch questions.    |
+| **Starter CSS**    | CSS pre-loaded alongside the starter HTML.                                                                             |
 | **Reference HTML** | The correct/expected HTML answer. Used by grading criteria and shown as the "Target Output" in match-output questions. |
-| **Reference CSS** | The correct/expected CSS answer. |
+| **Reference CSS**  | The correct/expected CSS answer.                                                                                       |
 
 All panels save on blur (when you click out of the editor).
 
@@ -248,27 +249,28 @@ Each criterion is evaluated independently when a student submits. Two criterion 
 
 Checks the structure of the student's submitted HTML.
 
-| Field | Description | Example |
-| --- | --- | --- |
-| **Label** | What the student sees in their results. | `Has a navigation bar` |
-| **CSS Selector** | Targets the element to check. | `nav`, `h1.title`, `#main` |
-| **Attribute** *(optional)* | An HTML attribute to compare. Leave blank to check element existence only. | `class`, `href`, `alt` |
-| **Expected Value** *(optional)* | The expected attribute value or text content. | `navbar`, `Contact Us` |
-| **Points** | Points awarded when this criterion passes. | `3` |
+| Field                           | Description                                                                | Example                    |
+| ------------------------------- | -------------------------------------------------------------------------- | -------------------------- |
+| **Label**                       | What the student sees in their results.                                    | `Has a navigation bar`     |
+| **CSS Selector**                | Targets the element to check.                                              | `nav`, `h1.title`, `#main` |
+| **Attribute** _(optional)_      | An HTML attribute to compare. Leave blank to check element existence only. | `class`, `href`, `alt`     |
+| **Expected Value** _(optional)_ | The expected attribute value or text content.                              | `navbar`, `Contact Us`     |
+| **Points**                      | Points awarded when this criterion passes.                                 | `3`                        |
 
 #### CSS Style Check
 
 Checks a CSS property value in the student's submitted stylesheet.
 
-| Field | Description | Example |
-| --- | --- | --- |
-| **Label** | What the student sees in their results. | `Body background is white` |
-| **CSS Selector** | The element whose style to check. | `body`, `.card`, `#header` |
-| **CSS Property** | The property to inspect. | `background-color`, `font-size` |
-| **Expected Value** | The expected value. | `#ffffff`, `white`, `16px` |
-| **Points** | Points awarded when this criterion passes. | `2` |
+| Field              | Description                                | Example                         |
+| ------------------ | ------------------------------------------ | ------------------------------- |
+| **Label**          | What the student sees in their results.    | `Body background is white`      |
+| **CSS Selector**   | The element whose style to check.          | `body`, `.card`, `#header`      |
+| **CSS Property**   | The property to inspect.                   | `background-color`, `font-size` |
+| **Expected Value** | The expected value.                        | `#ffffff`, `white`, `16px`      |
+| **Points**         | Points awarded when this criterion passes. | `2`                             |
 
 **To add a criterion:**
+
 1. Fill in the form fields.
 2. Click **Add Criterion**.
 3. The criterion appears in the "Existing Criteria" list above the form.
@@ -290,10 +292,10 @@ This is useful for verifying that match-output questions render correctly before
 
 ### 7.9 Publishing and Closing a Test
 
-| Action | Button | Effect |
-| --- | --- | --- |
-| **Publish** | `Publish Test` (header, draft tests only) | Makes the test visible to all students. Records the publish timestamp. |
-| **Close** | `Close Test` (header, published tests only) | Hides the test from students. Students who already started can no longer submit. |
+| Action      | Button                                      | Effect                                                                           |
+| ----------- | ------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Publish** | `Publish Test` (header, draft tests only)   | Makes the test visible to all students. Records the publish timestamp.           |
+| **Close**   | `Close Test` (header, published tests only) | Hides the test from students. Students who already started can no longer submit. |
 
 > Published tests cannot have questions or criteria added or removed. Close and re-draft if structural changes are needed.
 
@@ -306,20 +308,21 @@ To return to the dashboard click **Back** in the header.
 From the dashboard, click **Results** on any test card. The Results page shows:
 
 **Summary row:**
+
 - Total attempts (started + submitted)
 - Number of submitted attempts
 - Class average percentage
 
 **Attempts table:**
 
-| Column | Description |
-| --- | --- |
-| Student | Name and email |
-| Status | `in_progress` or `submitted` |
-| Score | Points earned / total points |
-| % | Colour-coded progress bar (green ≥ 70%, yellow ≥ 40%, red < 40%) |
-| Submitted | Timestamp |
-| Details | Link to the student's full per-criterion breakdown |
+| Column    | Description                                                      |
+| --------- | ---------------------------------------------------------------- |
+| Student   | Name and email                                                   |
+| Status    | `in_progress` or `submitted`                                     |
+| Score     | Points earned / total points                                     |
+| %         | Colour-coded progress bar (green ≥ 70%, yellow ≥ 40%, red < 40%) |
+| Submitted | Timestamp                                                        |
+| Details   | Link to the student's full per-criterion breakdown               |
 
 ---
 
@@ -338,15 +341,16 @@ This action cannot be undone.
 After logging in you land on the **Available Tests** dashboard (`/student`).
 
 Each test card shows:
+
 - Test title, description, and the lecturer's name
 - Time limit (if any)
 - Your attempt status:
 
-| Status shown | Meaning |
-| --- | --- |
-| *(no badge)* | You have not started this test yet |
-| **In Progress** | You have started but not submitted |
-| **Submitted** | You have submitted — your score is final |
+| Status shown    | Meaning                                  |
+| --------------- | ---------------------------------------- |
+| _(no badge)_    | You have not started this test yet       |
+| **In Progress** | You have started but not submitted       |
+| **Submitted**   | You have submitted — your score is final |
 
 ---
 
@@ -390,6 +394,7 @@ Code questions open a split-screen workspace:
 For **Match the Output** questions, a second preview panel appears below the live preview showing the **Target Output** you need to reproduce.
 
 **Tips:**
+
 - The editor supports syntax highlighting, auto-indent, and bracket matching.
 - Tab size is 2 spaces.
 - Word-wrap is on — long lines wrap rather than scroll.
@@ -411,10 +416,11 @@ Click any question number to switch to it. Your current answer is auto-saved bef
 ### 8.6 Submitting a Test
 
 1. Click **Submit Test** in the top-right corner.
-2. A confirmation dialog appears: *"Submit this test? You cannot make changes after submitting."*
+2. A confirmation dialog appears: _"Submit this test? You cannot make changes after submitting."_
 3. Click **OK** to confirm.
 
 After submission:
+
 - All questions are graded instantly by the server.
 - You are redirected to the Results page.
 - The test is locked — you cannot re-open the editor or change any answers.
@@ -428,6 +434,7 @@ After submission:
 After submitting you are taken to the Results page (`/student/attempts/:id/results`).
 
 **Score summary card:**
+
 - Total points earned and total possible
 - Percentage score with a colour-coded bar
 - Submission timestamp
@@ -556,6 +563,7 @@ The lecturer may have left the Starter HTML/CSS fields blank intentionally (code
 ### Test results show 0 points for a code question even though my code looks correct
 
 Possible reasons:
+
 - The question has no grading criteria attached. Ask your lecturer.
 - Your element is present but uses a different selector than expected (e.g. `<div class="nav">` instead of `<nav>`). The grading breakdown feedback message will explain exactly what was checked and what was found.
 

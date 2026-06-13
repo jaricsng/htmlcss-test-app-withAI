@@ -33,23 +33,39 @@ async function seedPublishedMcqTest(baseURL: string, label = '') {
   }
 
   const { token: lToken } = await post('/auth/register', {
-    email: lEmail, name: 'Seed Lecturer', password, role: 'lecturer',
+    email: lEmail,
+    name: 'Seed Lecturer',
+    password,
+    role: 'lecturer',
   });
   const { token: sToken } = await post('/auth/register', {
-    email: sEmail, name: 'Seed Student', password, role: 'student',
+    email: sEmail,
+    name: 'Seed Student',
+    password,
+    role: 'student',
   });
 
   const { id: testId } = await post('/tests', { title: testTitle }, lToken);
 
-  await post('/questions', {
-    test_id: testId, type: 'mcq', order_index: 0,
-    title: 'Sky color question', description: 'What color is the sky?',
-    starter_html: '', starter_css: '', reference_html: '', reference_css: '',
-    total_points: 5,
-    // Pass the raw array — the server will JSON.stringify it
-    mcq_options: ['Blue', 'Green', 'Red', 'Yellow'],
-    mcq_correct_index: 0,
-  }, lToken);
+  await post(
+    '/questions',
+    {
+      test_id: testId,
+      type: 'mcq',
+      order_index: 0,
+      title: 'Sky color question',
+      description: 'What color is the sky?',
+      starter_html: '',
+      starter_css: '',
+      reference_html: '',
+      reference_css: '',
+      total_points: 5,
+      // Pass the raw array — the server will JSON.stringify it
+      mcq_options: ['Blue', 'Green', 'Red', 'Yellow'],
+      mcq_correct_index: 0,
+    },
+    lToken
+  );
 
   await put(`/tests/${testId}`, { status: 'published' }, lToken);
 

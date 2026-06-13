@@ -117,12 +117,19 @@ function gradeDom(
   try {
     element = document.querySelector(criterion.selector);
   } catch {
-    return { ...base, passed: false, earned: 0, feedback: `Invalid selector: ${criterion.selector}` };
+    return {
+      ...base,
+      passed: false,
+      earned: 0,
+      feedback: `Invalid selector: ${criterion.selector}`,
+    };
   }
 
   if (!element) {
     return {
-      ...base, passed: false, earned: 0,
+      ...base,
+      passed: false,
+      earned: 0,
       feedback: `No element found matching "${criterion.selector}"`,
     };
   }
@@ -131,7 +138,8 @@ function gradeDom(
     const attr = element.getAttribute(criterion.attribute) ?? element.textContent ?? '';
     const pass = normalizeString(attr) === normalizeString(criterion.expected_value);
     return {
-      ...base, passed: pass,
+      ...base,
+      passed: pass,
       earned: pass ? criterion.points : 0,
       feedback: pass
         ? `✓ ${criterion.attribute} matches "${criterion.expected_value}"`
@@ -143,7 +151,8 @@ function gradeDom(
     const text = element.textContent ?? '';
     const pass = normalizeString(text).includes(normalizeString(criterion.expected_value));
     return {
-      ...base, passed: pass,
+      ...base,
+      passed: pass,
       earned: pass ? criterion.points : 0,
       feedback: pass
         ? `✓ Element contains "${criterion.expected_value}"`
@@ -152,7 +161,9 @@ function gradeDom(
   }
 
   return {
-    ...base, passed: true, earned: criterion.points,
+    ...base,
+    passed: true,
+    earned: criterion.points,
     feedback: `✓ Element "${criterion.selector}" exists`,
   };
 }
@@ -208,13 +219,23 @@ function gradeStyle(
   try {
     element = document.querySelector(criterion.selector);
   } catch {
-    return { ...base, passed: false, earned: 0, feedback: `Invalid selector: ${criterion.selector}` };
+    return {
+      ...base,
+      passed: false,
+      earned: 0,
+      feedback: `Invalid selector: ${criterion.selector}`,
+    };
   }
 
   if (element) {
     const inlineStyle = (element as HTMLElement).style?.[prop as any];
     if (inlineStyle && normalizeColor(inlineStyle) === normalizeColor(expectedRaw)) {
-      return { ...base, passed: true, earned: criterion.points, feedback: `✓ ${prop} matches "${expectedRaw}"` };
+      return {
+        ...base,
+        passed: true,
+        earned: criterion.points,
+        feedback: `✓ ${prop} matches "${expectedRaw}"`,
+      };
     }
   }
 
@@ -231,14 +252,17 @@ function gradeStyle(
 
   if (found === undefined) {
     return {
-      ...base, passed: false, earned: 0,
+      ...base,
+      passed: false,
+      earned: 0,
       feedback: `✗ Property "${prop}" not set on "${criterion.selector}"`,
     };
   }
 
   const pass = normalizeColor(found) === normalizeColor(expectedRaw);
   return {
-    ...base, passed: pass,
+    ...base,
+    passed: pass,
     earned: pass ? criterion.points : 0,
     feedback: pass
       ? `✓ ${prop}: ${found} matches "${expectedRaw}"`
@@ -247,13 +271,19 @@ function gradeStyle(
 }
 
 /** Returns true if `ruleSelector` targets the same element as `targetSelector` in the document. */
-function selectorMatches(ruleSelector: string, targetSelector: string, document: Document): boolean {
+function selectorMatches(
+  ruleSelector: string,
+  targetSelector: string,
+  document: Document
+): boolean {
   if (ruleSelector === targetSelector) return true;
   try {
     const elements = document.querySelectorAll(ruleSelector);
     const target = document.querySelector(targetSelector);
     if (!target) return false;
-    return Array.from(elements).some(el => el === target || el.contains(target) || target.contains(el));
+    return Array.from(elements).some(
+      el => el === target || el.contains(target) || target.contains(el)
+    );
   } catch {
     return false;
   }
@@ -271,8 +301,14 @@ function normalizeString(s: string): string {
 function normalizeColor(val: string): string {
   const v = val.trim().toLowerCase().replace(/\s/g, '');
   const colorNames: Record<string, string> = {
-    red: '#ff0000', blue: '#0000ff', green: '#008000', black: '#000000',
-    white: '#ffffff', yellow: '#ffff00', orange: '#ffa500', purple: '#800080',
+    red: '#ff0000',
+    blue: '#0000ff',
+    green: '#008000',
+    black: '#000000',
+    white: '#ffffff',
+    yellow: '#ffff00',
+    orange: '#ffa500',
+    purple: '#800080',
   };
   return colorNames[v] ?? v;
 }

@@ -24,7 +24,10 @@ export default function LecturerDashboard() {
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    testsApi.myTests().then(setTests).finally(() => setLoading(false));
+    testsApi
+      .myTests()
+      .then(setTests)
+      .finally(() => setLoading(false));
   }, []);
 
   async function createTest() {
@@ -44,11 +47,14 @@ export default function LecturerDashboard() {
   }
 
   return (
-    <Layout title="My Tests" actions={
-      <button className="btn-primary" onClick={createTest} disabled={creating}>
-        {creating ? 'Creating…' : '+ New Test'}
-      </button>
-    }>
+    <Layout
+      title="My Tests"
+      actions={
+        <button className="btn-primary" onClick={createTest} disabled={creating}>
+          {creating ? 'Creating…' : '+ New Test'}
+        </button>
+      }
+    >
       <div className="mb-6">
         <h2 className="text-2xl font-bold">My Tests</h2>
         <p className="text-gray-500 text-sm mt-1">Create and manage HTML/CSS assessments</p>
@@ -59,7 +65,9 @@ export default function LecturerDashboard() {
       ) : tests.length === 0 ? (
         <div className="card p-12 text-center">
           <p className="text-gray-400 mb-4">No tests yet</p>
-          <button className="btn-primary" onClick={createTest}>Create your first test</button>
+          <button className="btn-primary" onClick={createTest}>
+            Create your first test
+          </button>
         </div>
       ) : (
         <div className="grid gap-4">

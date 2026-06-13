@@ -141,12 +141,12 @@ erDiagram
 
 **Key constraints**
 
-| Table | Constraint |
-|---|---|
-| `users.email` | `UNIQUE` |
-| `attempts` | `UNIQUE(test_id, student_id)` — one attempt per student per test |
-| `submissions` | `UNIQUE(attempt_id, question_id)` — upserted on each auto-save |
-| `tests`, `questions`, `criteria`, `submissions` | `ON DELETE CASCADE` on FK to parent |
+| Table                                           | Constraint                                                       |
+| ----------------------------------------------- | ---------------------------------------------------------------- |
+| `users.email`                                   | `UNIQUE`                                                         |
+| `attempts`                                      | `UNIQUE(test_id, student_id)` — one attempt per student per test |
+| `submissions`                                   | `UNIQUE(attempt_id, question_id)` — upserted on each auto-save   |
+| `tests`, `questions`, `criteria`, `submissions` | `ON DELETE CASCADE` on FK to parent                              |
 
 ---
 
@@ -486,32 +486,32 @@ flowchart TB
 
 ### Use case index
 
-| ID | Use Case | Actor(s) | Notes |
-| --- | --- | --- | --- |
-| UC_REG | Register account | Lecturer, Student | Role selected at registration |
-| UC_LOG | Login | Lecturer, Student | Returns JWT; role-based redirect |
-| UC_OUT | Logout | Lecturer, Student | Clears localStorage session |
-| UC_CT | Create test | Lecturer | Creates draft; navigates to editor |
-| UC_ET | Edit test metadata | Lecturer | Title, description, time limit — saved on blur |
-| UC_PUB | Publish test | Lecturer | Sets `status = "published"`; records `published_at` |
-| UC_CLO | Close test | Lecturer | Sets `status = "closed"`; hides from students |
-| UC_DT | Delete test | Lecturer | Cascades to questions, attempts, submissions |
-| UC_AQ | Add question | Lecturer | Types: code-from-scratch, fix-the-bug, match-output, mcq |
-| UC_EQ | Edit question | Lecturer | Fields saved on blur via PUT |
-| UC_MCQ | Configure MCQ options & correct answer | Lecturer | `<<include>>` UC_AQ — shown only when type = mcq |
-| UC_AC | Add grading criterion | Lecturer | `<<extend>>` UC_AQ — dom or style check |
-| UC_DC | Delete criterion | Lecturer | |
-| UC_DQ | Delete question | Lecturer | Cascades to criteria and submissions |
-| UC_VR | View class results | Lecturer | Aggregated attempts table with avg score |
-| UC_VA | View student attempt detail | Lecturer | `<<include>>` UC_VR — per-criterion breakdown |
-| UC_BR | Browse available tests | Student | Shows attempt status per test card |
-| UC_ST | Start test | Student | Creates attempt; `<<include>>` UC_AS |
-| UC_RS | Resume in-progress test | Student | Reloads saved answers; `<<include>>` UC_AS |
-| UC_AN | Answer MCQ question | Student | Selects option; `<<include>>` UC_AS |
-| UC_CD | Write HTML / CSS code | Student | Monaco editor; `<<include>>` UC_AS |
-| UC_LP | View live preview | Student | `<<extend>>` UC_CD — sandboxed iframe, always visible alongside editor |
-| UC_SB | Submit test | Student | `<<include>>` UC_GR — locks attempt permanently |
-| UC_VW | View own results | Student | Score summary + per-criterion accordion |
-| UC_AS | Auto-save answers | System | Debounced 800 ms; upsert via PUT |
-| UC_GR | Grade submission | System | MCQ: index compare; code: JSDOM + css-tree per criterion |
-| UC_TL | Enforce time limit & auto-submit | System | `<<extend>>` UC_ST — active only when `time_limit_minutes` is set |
+| ID     | Use Case                               | Actor(s)          | Notes                                                                  |
+| ------ | -------------------------------------- | ----------------- | ---------------------------------------------------------------------- |
+| UC_REG | Register account                       | Lecturer, Student | Role selected at registration                                          |
+| UC_LOG | Login                                  | Lecturer, Student | Returns JWT; role-based redirect                                       |
+| UC_OUT | Logout                                 | Lecturer, Student | Clears localStorage session                                            |
+| UC_CT  | Create test                            | Lecturer          | Creates draft; navigates to editor                                     |
+| UC_ET  | Edit test metadata                     | Lecturer          | Title, description, time limit — saved on blur                         |
+| UC_PUB | Publish test                           | Lecturer          | Sets `status = "published"`; records `published_at`                    |
+| UC_CLO | Close test                             | Lecturer          | Sets `status = "closed"`; hides from students                          |
+| UC_DT  | Delete test                            | Lecturer          | Cascades to questions, attempts, submissions                           |
+| UC_AQ  | Add question                           | Lecturer          | Types: code-from-scratch, fix-the-bug, match-output, mcq               |
+| UC_EQ  | Edit question                          | Lecturer          | Fields saved on blur via PUT                                           |
+| UC_MCQ | Configure MCQ options & correct answer | Lecturer          | `<<include>>` UC_AQ — shown only when type = mcq                       |
+| UC_AC  | Add grading criterion                  | Lecturer          | `<<extend>>` UC_AQ — dom or style check                                |
+| UC_DC  | Delete criterion                       | Lecturer          |                                                                        |
+| UC_DQ  | Delete question                        | Lecturer          | Cascades to criteria and submissions                                   |
+| UC_VR  | View class results                     | Lecturer          | Aggregated attempts table with avg score                               |
+| UC_VA  | View student attempt detail            | Lecturer          | `<<include>>` UC_VR — per-criterion breakdown                          |
+| UC_BR  | Browse available tests                 | Student           | Shows attempt status per test card                                     |
+| UC_ST  | Start test                             | Student           | Creates attempt; `<<include>>` UC_AS                                   |
+| UC_RS  | Resume in-progress test                | Student           | Reloads saved answers; `<<include>>` UC_AS                             |
+| UC_AN  | Answer MCQ question                    | Student           | Selects option; `<<include>>` UC_AS                                    |
+| UC_CD  | Write HTML / CSS code                  | Student           | Monaco editor; `<<include>>` UC_AS                                     |
+| UC_LP  | View live preview                      | Student           | `<<extend>>` UC_CD — sandboxed iframe, always visible alongside editor |
+| UC_SB  | Submit test                            | Student           | `<<include>>` UC_GR — locks attempt permanently                        |
+| UC_VW  | View own results                       | Student           | Score summary + per-criterion accordion                                |
+| UC_AS  | Auto-save answers                      | System            | Debounced 800 ms; upsert via PUT                                       |
+| UC_GR  | Grade submission                       | System            | MCQ: index compare; code: JSDOM + css-tree per criterion               |
+| UC_TL  | Enforce time limit & auto-submit       | System            | `<<extend>>` UC_ST — active only when `time_limit_minutes` is set      |

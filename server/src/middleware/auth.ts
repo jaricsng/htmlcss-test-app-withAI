@@ -14,6 +14,7 @@ export interface JwtPayload {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       /** Decoded JWT payload attached by {@link requireAuth}. Present on all protected routes. */

@@ -61,7 +61,6 @@ export function createDbWrapper(dbPath: string) {
   };
 }
 
-const DEFAULT_DB_PATH = process.env.DB_PATH
-  ?? path.join(__dirname, '../../../data/app.db');
+const DEFAULT_DB_PATH = process.env.DB_PATH ?? path.join(__dirname, '../../../data/app.db');
 
 export default createDbWrapper(DEFAULT_DB_PATH);

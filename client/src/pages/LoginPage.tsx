@@ -45,19 +45,40 @@ export default function LoginPage() {
             </div>
           )}
           <div>
-            <label className="label" htmlFor="login-email">Email</label>
-            <input id="login-email" className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <label className="label" htmlFor="login-email">
+              Email
+            </label>
+            <input
+              id="login-email"
+              className="input"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
           </div>
           <div>
-            <label className="label" htmlFor="login-password">Password</label>
-            <input id="login-password" className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+            <label className="label" htmlFor="login-password">
+              Password
+            </label>
+            <input
+              id="login-password"
+              className="input"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
           </div>
           <button className="btn-primary w-full justify-center py-2.5" disabled={loading}>
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
         <p className="text-center text-sm text-gray-500 mt-6">
-          No account? <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
+          No account?{' '}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Register
+          </Link>
         </p>
       </div>
     </div>
